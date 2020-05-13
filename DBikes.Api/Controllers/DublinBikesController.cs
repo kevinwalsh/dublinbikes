@@ -1,6 +1,8 @@
 ﻿using DBikes.Api.Helpers.HTTPClient;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Web.Http;
+using System.Xml;
 
 namespace DBikes.Api.Controllers
 {
@@ -27,8 +29,8 @@ namespace DBikes.Api.Controllers
             // var resObj = JsonConvert.DeserializeObject(resSerialized);       //EDIT: doing on helper
             // return resObj;
 
-            var result = dbhelper.GetStation(id);
-            return result;
+            string result = dbhelper.GetStation(id);
+            return JsonConvert.DeserializeObject(result);
         }
 
         [HttpGet]
@@ -36,8 +38,21 @@ namespace DBikes.Api.Controllers
         public object GetAllStations()
         {
             DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
-            var result = dbhelper.GetAllStations();
-            return result;
+            string result = dbhelper.GetAllStations();
+            return JsonConvert.DeserializeObject(result);
+        }
+
+        [HttpGet]
+        [Route("GetStation_NoAPIKey")]
+        public object GetStation_XML_NoAPIKey(int stationId)
+        {
+            DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
+            var result = dbhelper.GetStation_NoAPIRequired(stationId);
+            XmlDocument doc = new XmlDocument();            // returns XML, not JSON
+            doc.LoadXml(result);
+            // var responseObject = JsonConvert.SerializeXmlNode(doc);
+
+            return doc;
         }
 
         [HttpGet]

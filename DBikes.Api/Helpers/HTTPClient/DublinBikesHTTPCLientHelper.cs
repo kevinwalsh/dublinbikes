@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.IO;
 using System.Net;
+using System.Xml;
 
 namespace DBikes.Api.Helpers.HTTPClient
 {
@@ -45,46 +46,27 @@ namespace DBikes.Api.Helpers.HTTPClient
             return fullUrl;
         }
 
-        public object GetStation(int stationid)
+        public string GetStation(int stationid)
         {
-            HttpWebRequest DBikesApiRequest = WebRequest.Create(
-                    BuildUrlParams(stationid)
-                ) as HttpWebRequest;
-
-            string responseString = "";
-            using (HttpWebResponse response = DBikesApiRequest.GetResponse() as HttpWebResponse)
-            {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                responseString = reader.ReadToEnd();
-
-                //  KW: was not in guide, but its a good idea to explicitly close response stream
-                response.Close();
-            }
-
-            var responseObject = JsonConvert.DeserializeObject(responseString);
-            return responseObject;
+            var url = BuildUrlParams(stationid);
+            var responseString = GenericHTTPRequestHelper.SendHttpRequest(url);
+            return responseString;
         }
 
-        public object GetAllStations()
+        public string GetAllStations()
         {
-            HttpWebRequest DBikesApiRequest = WebRequest.Create(
-                    BuildUrlParams()
-                ) as HttpWebRequest;
-
-            string responseString = "";
-            using (HttpWebResponse response = DBikesApiRequest.GetResponse() as HttpWebResponse)
-            {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                responseString = reader.ReadToEnd();
-
-                //  KW: not in tut/e.g., but good idea to close response
-                response.Close();
-            }
-
-            var responseObject = JsonConvert.DeserializeObject(responseString);
-            return responseObject;
+            var url = BuildUrlParams();
+            var responseString = GenericHTTPRequestHelper.SendHttpRequest(url);
+            return responseString;
         }
-        
+
+        public string GetStation_NoAPIRequired(int stationId)
+        {
+            var url = "http://www.dublinbikes.ie/service/stationdetails/dublin/" + stationId;
+            var responseString = GenericHTTPRequestHelper.SendHttpRequest(url);
+            return responseString;
+        }
+
 
         /*
             // https://www.codeproject.com/Articles/1180283/How-to-Implement-OpenWeatherMap-API-in-ASP-NET-MVC
