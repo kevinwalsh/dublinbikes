@@ -31,6 +31,7 @@ namespace DBikes.Api.Helpers.HTTPClient
         {
         /*  sample single:  https://api.jcdecaux.com/vls/v1/stations/{station_number}?contract={contract_name} 
             sample all in area  https://api.jcdecaux.com/vls/v1/stations?contract={contract_name}&apiKey={api_key}
+            XML: no api reqd, but no stationid in results  http://www.dublinbikes.ie/service/stationdetails/dublin/41
         */
 
             string key = akhelper.GetApiKey("dublinbikes");
@@ -67,6 +68,13 @@ namespace DBikes.Api.Helpers.HTTPClient
             return responseString;
         }
 
+        public XmlDocument GetStationXML_NoAPIRequired(int stationId)
+        {
+            var url = "http://www.dublinbikes.ie/service/stationdetails/dublin/" + stationId;
+            var responsexml= GenericHTTPRequestHelper.SendXMLRequest(url);
+            var stationxml = responsexml.DocumentElement.SelectSingleNode("available"); // station IS "base elem"
+            return responsexml;
+        }
 
         /*
             // https://www.codeproject.com/Articles/1180283/How-to-Implement-OpenWeatherMap-API-in-ASP-NET-MVC

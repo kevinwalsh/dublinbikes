@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Xml;
 
 namespace DBikes.Api.Helpers.HTTPClient
 {
@@ -25,6 +26,18 @@ namespace DBikes.Api.Helpers.HTTPClient
                 response.Close();
             }
             return responseString;
+        }
+
+        public static XmlDocument SendXMLRequest(string fullurl)        // didnt need in end but may use later
+        {
+            HttpWebRequest DBikesApiRequest = WebRequest.Create(fullurl) as HttpWebRequest;
+            XmlDocument responseXML = new XmlDocument();
+            using (HttpWebResponse response = DBikesApiRequest.GetResponse() as HttpWebResponse)
+            {
+                responseXML.Load(response.GetResponseStream());
+                response.Close();
+            }
+            return responseXML ;
         }
     }
 }
