@@ -236,6 +236,7 @@
     <Compile Include="Helpers\APIKey\FakeApiKeyHelper.cs" />
     <Compile Include="Helpers\APIKey\ApiKeyHelper.cs" />
     <Compile Include="Helpers\APIKey\IApiKeyHelper.cs" />
+    <Compile Include="Helpers\GPSHelper\GPSHelper.cs" />
     <Compile Include="Helpers\HTTPClient\DublinBikesStaticHTTPCLientHelper.cs" />
     <Compile Include="Helpers\HTTPClient\DublinBikesHTTPCLientHelper.cs" />
     <Compile Include="Helpers\HTTPClient\GenericHTTPRequestHelper.cs" />

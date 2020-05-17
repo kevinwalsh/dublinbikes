@@ -26,7 +26,7 @@ namespace DBikes.Api.Models.DBikesModels
         string positionLong;
         */
         [JsonProperty("position")]
-        Position position;
+        public Position position;
 
         [JsonProperty("available_bikes")]
         public int available { get; set; }

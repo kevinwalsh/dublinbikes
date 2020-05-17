@@ -1,4 +1,5 @@
-﻿using DBikes.Api.Helpers.HTTPClient;
+﻿using DBikes.Api.Helpers.GPSHelper;
+using DBikes.Api.Helpers.HTTPClient;
 using DBikes.Api.Models.DBikesModels;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -66,6 +67,18 @@ namespace DBikes.Api.Controllers
 //            return stations;
             return stations.Where(x=>x.stationNumber < 15).OrderBy(x=>x.stationNumber);     
                                 //  filter 110-item list to reduce response size
+        }
+
+        [HttpGet]
+        [Route("GetStationsWithinMetres/{id}/{metres}")]
+        public object GetStationsWithinMetres(int id, int metres)
+        {
+            DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
+            string result = dbhelper.GetAllStations();
+            var stations= JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
+            var mystation = stations.SingleOrDefault(x => x.stationNumber == id);
+            var nearbyStations = GPSHelper.FindNearbyStations(stations, mystation, metres);
+            return nearbyStations;
         }
 
         [HttpGet]
