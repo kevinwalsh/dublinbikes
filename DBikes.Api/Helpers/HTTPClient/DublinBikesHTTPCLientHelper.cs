@@ -21,8 +21,8 @@ namespace DBikes.Api.Helpers.HTTPClient
 
     public class DublinBikesHTTPClientHelper
     {
-         IApiKeyHelper akhelper = new FakeApiKeyHelper();
-        // IApiKeyHelper akhelper = new ApiKeyHelper();
+        // IApiKeyHelper akhelper = new FakeApiKeyHelper();
+         IApiKeyHelper akhelper = new ApiKeyHelper();
 
         string baseurl = "https://api.jcdecaux.com/vls/v1/stations";
         string locationparam = "&contract=dublin";

@@ -34,6 +34,9 @@ namespace DBikes.Api
                         //
                         c.SingleApiVersion("v1", "DBikes.Api");
 
+                        c.DescribeAllEnumsAsStrings();     
+                                    // https://stackoverflow.com/questions/36452468/swagger-ui-web-api-documentation-present-enums-as-strings
+
                         // If you want the output Swagger docs to be indented properly, enable the "PrettyPrint" option.
                         //
                         //c.PrettyPrint();
