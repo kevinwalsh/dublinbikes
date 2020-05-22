@@ -6,7 +6,7 @@ PROJECT GOALS:
 - CLIENT: view all stations
 -  		incl bikes remaining, GPS loc, etc
 - CLIENT: view single station/ set live update
-- Redis caching
+- In-memory caching (Redis is overkill for this solution)
 - 
 
 

@@ -1,6 +1,7 @@
 ﻿using DBikes.Api.Helpers.GPSHelper;
 using DBikes.Api.Helpers.HTTPClient;
 using DBikes.Api.Models.DBikesModels;
+using DBikes.Api.Providers;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
@@ -16,6 +17,14 @@ namespace DBikes.Api.Controllers
     [RoutePrefix("api/DublinBikes")]
     public class DublinBikesController : ApiController
     {
+        private DBikesMemoryCache cache;
+        private DublinBikesHTTPClientHelper dbhelper;
+
+        public DublinBikesController()
+        {
+            cache = new DBikesMemoryCache();
+            dbhelper = new DublinBikesHTTPClientHelper();
+        }
 
         /*        [HttpPost]
                 [Route("PostInteger")]
@@ -35,10 +44,17 @@ namespace DBikes.Api.Controllers
         [Route("GetStation/{id}")]
         public object GetStationById(int id=11)
         {
-            DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
-            string result = dbhelper.GetStation(id);
-            BikeStation station = JsonConvert.DeserializeObject<BikeStation>(result);
-            return station;
+             List<BikeStation> stations = (List<BikeStation>) cache.CheckCache("dublin");
+            if (stations != null)
+            {
+                return stations.Single(x => x.stationNumber == id);
+            }
+            else
+            {
+                string result = dbhelper.GetStation(id);
+                BikeStation station = JsonConvert.DeserializeObject<BikeStation>(result);
+                return station;
+            }
         }
         
 
@@ -51,7 +67,6 @@ namespace DBikes.Api.Controllers
         [Route("GetStationExactModel/{id}")]
         public object GetStationExactModel(int id=11)
         {
-            DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
             string result = dbhelper.GetStation(id);
             BikeStationExact bse = JsonConvert.DeserializeObject<BikeStationExact>(result);
             return bse;
@@ -61,10 +76,15 @@ namespace DBikes.Api.Controllers
         [Route("GetAllStations")]
         public object GetAllStations()
         {
-            DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
-            string result = dbhelper.GetAllStations();
-            List<BikeStation> stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
-//            return stations;
+            List<BikeStation> stations = (List<BikeStation>) cache.CheckCache("dublin");
+            if (stations == null)
+            {
+                string result = dbhelper.GetAllStations();
+                stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
+                cache.AddToCache("dublin", stations);
+            }
+            
+            //            return stations;
             return stations.Where(x=>x.stationNumber < 15).OrderBy(x=>x.stationNumber);     
                                 //  filter 110-item list to reduce response size
         }
@@ -73,9 +93,14 @@ namespace DBikes.Api.Controllers
         [Route("GetStationsWithinMetres/{id}/{metres}")]
         public object GetStationsWithinMetres(int id, int metres)
         {
-            DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
-            string result = dbhelper.GetAllStations();
-            var stations= JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
+            List<BikeStation> stations = (List<BikeStation>)cache.CheckCache("dublin");
+            if (stations == null)
+            {
+                string result = dbhelper.GetAllStations();
+                stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
+                cache.AddToCache("dublin", stations);
+            }
+
             var mystation = stations.SingleOrDefault(x => x.stationNumber == id);
             var nearbyStations = GPSHelper.FindNearbyStations(stations, mystation, metres);
             return nearbyStations;
@@ -85,7 +110,6 @@ namespace DBikes.Api.Controllers
         [Route("GetStation_NoAPIKey")]
         public object GetStation_XML_NoAPIKey(int stationId)         // N.B. returns XML, not JSON here
         {
-            DublinBikesHTTPClientHelper dbhelper = new DublinBikesHTTPClientHelper();
             var result = dbhelper.GetStation_NoAPIRequired(stationId);
             var xmlSerializer = new XmlSerializer(typeof(BikeStationBasic));
             var stringreader = new StringReader(result);
