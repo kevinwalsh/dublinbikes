@@ -1,0 +1,106 @@
+﻿<div class="title">
+    <h3>DublinBikes</h3>
+</div>
+
+<div class="col-xs-12 bikequery">
+    <div class="col-xs-12">
+        <label>Enter Station #:</label>
+        <input type="number" [(ngModel)]="selectedStation" />
+        <button (click)="SearchSingleStation()"> Search Single</button>
+    </div>
+    <div class="col-xs-12">
+        <label>OR search all stations</label>
+        <button (click)="SearchAllStations()">Search All Stations</button>
+    </div>
+</div>
+
+<br /><br /><br />
+
+<!--    Results Header      -->
+<div class="results" *ngIf="results !=null">
+    <h3>Results: ({{results.length}} found)</h3>
+    <p><em>(Last Updated: {{ lastupdate | date:'HH:mm:ss' }})</em></p>
+    <div class="col-xs-12">
+        <div class="col-xs-1">
+            watch
+        </div>
+        <div class="col-xs-1">
+            Nearby
+        </div>
+        <div class="col-xs-1">
+            Station #
+        </div>
+        <div class="col-xs-4">
+            Name
+        </div>
+        <div class="col-xs-1">
+            Bikes
+        </div>
+        <div class="col-xs-1">
+            Spaces
+        </div>
+        <div class="col-xs-1">
+            Updated
+        </div>
+        <!--
+        <div class="col-xs-2">
+            MISC
+        </div>
+            -->
+    </div>
+
+    <!--    Results Items      -->
+    <div class="col-xs-12" *ngFor="let station of results">
+        <div class="col-xs-1">
+            <button (click)="WatchStation()">
+                <!--Candidate Unicode Symbols for "watch/ autoupdate:
+                      &#10004;
+                &#9977;
+                &#x231A;
+                &#x231B;
+                &#x1F441;       eye, doesnt work in IE
+                    -->
+                &#x231A;
+            </button>
+        </div>
+        <div class="col-xs-1">
+            <button (click)="ShowNearbyStations(station.stationNum)">
+                <!--&#x1f4cc;
+                &#8981;     magnifyingglass, small
+                &#9096;         piratewheel, small
+                &#9099;         arrow NW, maybe?
+                &#9788;         compass/sun
+                &#x26db;         triangle
+                &#x26ef;
+                    -->
+                &#x26db;
+            </button>
+        </div>
+        <div class="col-xs-1">
+            {{station.stationNum}}
+        </div>
+        <div class="col-xs-4">
+            {{station.stationName}}
+        </div>
+        <div class="col-xs-1 " [class.warning]="station.available_bikes < lowBikeLimit">
+            {{station.available_bikes}}
+        </div>
+        <div class="col-xs-1" [class.warning]="station.available_bike_stands < lowBikeLimit">
+            {{station.available_bike_stands}}
+        </div>
+        <div class="col-xs-1" [class.warning]="station.last_update> lastupdate-120000">
+            <!--{{station.last_update}}-->
+            {{station.last_update | date:'HH:mm:ss'}}
+        </div>
+        <!--
+        <div class="col-xs-2">
+            banking:{{station.banking}}, status:{{station.status}}, bonus:{{station.bonus}}
+        </div>
+        -->
+    </div>
+</div>
+<!--
+<div class="resultsJSON">
+    RESULT: {{results | json}}
+</div>
+    -->

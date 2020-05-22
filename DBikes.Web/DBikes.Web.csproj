@@ -136,8 +136,8 @@
   <ItemGroup>
     <Content Include="app\mywebproject\Dashboard\Dashboard.component.css" />
     <Content Include="app\mywebproject\Dashboard\dashboard.component.html" />
-    <Content Include="app\mywebproject\api-caller-test\api-caller-test.component.css" />
-    <Content Include="app\mywebproject\api-caller-test\api-caller-test.component.html" />
+    <Content Include="app\mywebproject\dbikes\dbikes-dashboard.component.css" />
+    <Content Include="app\mywebproject\dbikes\dbikes-dashboard.component.html" />
     <Content Include="app\mywebproject\template\template.component.css" />
     <Content Include="app\mywebproject\template\template.component.html" />
     <Content Include="app\mywebproject\template\template.component.js" />
@@ -213,9 +213,10 @@
     <TypeScriptCompile Include="app\app.component.spec.ts" />
     <TypeScriptCompile Include="app\app.component.ts" />
     <TypeScriptCompile Include="app\app.module.ts" />
-    <TypeScriptCompile Include="app\mywebproject\api-caller-test\api-caller-test.service.ts" />
     <TypeScriptCompile Include="app\mywebproject\Dashboard\dashboard.component.ts" />
-    <TypeScriptCompile Include="app\mywebproject\api-caller-test\api-caller-test.component.ts" />
+    <TypeScriptCompile Include="app\mywebproject\dbikes\dbikes.service.ts" />
+    <TypeScriptCompile Include="app\mywebproject\dbikes\dbikes.model.ts" />
+    <TypeScriptCompile Include="app\mywebproject\dbikes\dbikes-dashboard.component.ts" />
     <TypeScriptCompile Include="app\mywebproject\template\template.component.ts" />
     <TypeScriptCompile Include="app\main.ts" />
   </ItemGroup>

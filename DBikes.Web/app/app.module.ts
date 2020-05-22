@@ -7,8 +7,9 @@ import { AppComponent }  from './app.component';
 import { DashboardComponent } from './mywebproject/Dashboard/Dashboard.component';
 import { TemplateComponent } from './mywebproject/template/template.component';
 import { AppRoutingModule } from './app-routing.module';
-import { ApiCallerTestService } from './mywebproject/api-caller-test/api-caller-test.service';
-import { ApiCallerTestComponent } from './mywebproject/api-caller-test/api-caller-test.component';
+import { DBikesDashboardComponent } from './mywebproject/dbikes/dbikes-dashboard.component';
+import { DBikesService} from './mywebproject/dbikes/dbikes.service';
+
 
 @NgModule({
     imports: [
@@ -21,11 +22,11 @@ import { ApiCallerTestComponent } from './mywebproject/api-caller-test/api-calle
     declarations: [
         DashboardComponent,
         TemplateComponent,
-        ApiCallerTestComponent,
+        DBikesDashboardComponent,
         AppComponent
     ],
     providers: [
-        ApiCallerTestService
+        DBikesService
         ],
   bootstrap:    [ AppComponent ]
 })
