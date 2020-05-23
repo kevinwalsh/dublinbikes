@@ -17,13 +17,29 @@ namespace DBikes.Api.Helpers.HTTPClient
                ) as HttpWebRequest;
 
             string responseString = "";
-            using (HttpWebResponse response = DBikesApiRequest.GetResponse() as HttpWebResponse)
-            {
-                StreamReader reader = new StreamReader(response.GetResponseStream());
-                responseString = reader.ReadToEnd();
 
-                //  KW: was not in guide, but its a good idea to explicitly close response stream
-                response.Close();
+            try { 
+                using (HttpWebResponse response = DBikesApiRequest.GetResponse() as HttpWebResponse)
+                {
+                    StreamReader reader = new StreamReader(response.GetResponseStream());
+                    responseString = reader.ReadToEnd();
+
+                    //  KW: was not in guide, but its a good idea to explicitly close response stream
+                    response.Close();
+                }
+            }
+            catch (System.Net.WebException error) {
+                var resp = (HttpWebResponse) error.Response;
+                if (resp.StatusCode !=null && ((int)resp.StatusCode == 403 || (int)resp.StatusCode == 404))
+                {
+                    // want to throw 403/404 as error is from either client/3rdparty, not internal(500).
+                    //  However, still don't want to send sensitive details (responseuri, etc) to client
+                   throw new System.Web.Http.HttpResponseException(resp.StatusCode);
+                }
+                else
+                {
+                    throw error;                // default: rethrow original
+                }
             }
             return responseString;
         }

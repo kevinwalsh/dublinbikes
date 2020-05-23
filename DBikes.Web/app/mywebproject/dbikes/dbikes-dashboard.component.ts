@@ -1,7 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { Subject } from 'rxjs';
 import { DBikesService } from './dbikes.service';
 import { DBikesModel } from './dbikes.model';
 
@@ -34,7 +32,11 @@ export class DBikesDashboardComponent implements OnInit {
             }
             this.results = r;
             this.lastupdate = Date.now();
-        });
+        },
+            error => {
+                this.HandleHTTPError(error);
+            }
+        );
     }
 
     SearchSingleStation() {
@@ -47,7 +49,11 @@ export class DBikesDashboardComponent implements OnInit {
                 let c = x as DBikesModel;
 
                 this.lastupdate = Date.now();
-            });
+            },
+            error => {
+                this.HandleHTTPError(error);
+            }
+        );
     }
 
     WatchStation() {
@@ -65,6 +71,31 @@ export class DBikesDashboardComponent implements OnInit {
                 this.results = r;
 
                 this.lastupdate = Date.now();
-            });
+            },
+            error => {
+                this.HandleHTTPError(error);
+            }
+        );
+    }
+
+    HandleHTTPError(error: any) {
+        switch (error.status) {
+            case 404:
+                alert("404 Error: station not found:");
+                break;
+            case 403:
+                alert("403 Error: The server rejected the request");
+                console.error('403 Error (this may be due to an invalid API Key on the intermediate server).'
+                    + '\n ' + JSON.stringify(error));
+                break;
+            case 500:
+                alert("500 Error: Internal server error");
+                console.error('500 Error: \n ' + JSON.stringify(error));
+                break;
+            default:
+                alert("Error communicating with server");
+                break;
+        }
+        this.results = [];
     }
 }

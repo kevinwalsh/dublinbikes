@@ -246,8 +246,6 @@
     <Compile Include="Models\DBikesModels\BikeStationBasic.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\CityEnum.cs" />
-    <Compile Include="Models\JsonDateConverter2.cs" />
-    <Compile Include="Models\JsonDateConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\DBikesMemoryCache.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
