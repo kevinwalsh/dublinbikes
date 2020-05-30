@@ -23,8 +23,8 @@ export class DBikesService {
         return this.http.get<DBikesModel[]>(this.baseurl + '/GetAllStations');
     }
 
-    SearchSingle(stationNum: number): Observable<DBikesModel> {
-        return this.http.get<DBikesModel>(this.baseurl + '/GetStation/' + stationNum);
+    SearchSingle(stationNum: number): Observable<DBikesModel[]> {
+        return this.http.get<DBikesModel[]>(this.baseurl + '/GetStation/' + stationNum);
     }
 
     SearchNearby(stationNum: number): Observable<DBikesModel[]> {

@@ -5,19 +5,20 @@
 <div class="col-xs-12 bikequery">
     <div class="col-xs-12">
         <label>Enter Station #:</label>
-        <input type="number" [(ngModel)]="selectedStation" />
-        <button (click)="SearchSingleStation()"> Search Single</button>
+        <input id="SelectedStationInput" type="number" [(ngModel)]="selectedStation" />
+        <button id="SearchSingleBtn" (click)="SearchSingleStation()"> Search Single</button>
     </div>
     <div class="col-xs-12">
         <label>OR search all stations</label>
-        <button (click)="SearchAllStations()">Search All Stations</button>
+        <button id="SearchAllBtn" (click)="SearchAllStations()">Search All Stations</button>
+        <button id="ToggleLiveUpdateBtn"(click)="ToggleLiveUpdate()">{{liveUpdateBoolean ? 'Disable': 'Enable'}} LiveUpdate</button>
     </div>
 </div>
 
 <br /><br /><br />
 
 <!--    Results Header      -->
-<div class="results" *ngIf="results !=null">
+<div id="results" class="results" *ngIf="results !=null">
     <h3>Results: ({{results.length}} found)</h3>
     <p><em>(Last Updated: {{ lastupdate | date:'HH:mm:ss' }})</em></p>
     <div class="col-xs-12">
@@ -50,7 +51,7 @@
     </div>
 
     <!--    Results Items      -->
-    <div class="col-xs-12" *ngFor="let station of results">
+    <div class="col-xs-12 resultitem" *ngFor="let station of results">
         <div class="col-xs-1">
             <button (click)="WatchStation()">
                 <!--Candidate Unicode Symbols for "watch/ autoupdate:
@@ -64,7 +65,7 @@
             </button>
         </div>
         <div class="col-xs-1">
-            <button (click)="ShowNearbyStations(station.stationNum)">
+            <button class="ShowNearbyBtn" (click)="ShowNearbyStations(station.stationNum)">
                 <!--&#x1f4cc;
                 &#8981;     magnifyingglass, small
                 &#9096;         piratewheel, small

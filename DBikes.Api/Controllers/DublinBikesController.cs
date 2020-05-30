@@ -45,18 +45,19 @@ namespace DBikes.Api.Controllers
         public object GetStationById(int id=11)
         {
              List<BikeStation> stations = (List<BikeStation>) cache.CheckCache("dublin");
+            BikeStation station = null;
             if (stations != null)
             {
-                return stations.Single(x => x.stationNumber == id);
+                station = stations.Single(x => x.stationNumber == id);
             }
             else
             {
                 string result = dbhelper.GetStation(id);
-                BikeStation station = JsonConvert.DeserializeObject<BikeStation>(result);
-                return station;
+                station = JsonConvert.DeserializeObject<BikeStation>(result);
             }
+            List<BikeStation> stationAsList = new List<BikeStation>() { station };
+            return stationAsList;
         }
-        
 
         /// <summary>
         /// Debug function to return model with properties exactly matching parameters of expected JSON.

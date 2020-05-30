@@ -1,7 +1,8 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { DBikesService } from './dbikes.service';
 import { DBikesModel } from './dbikes.model';
+import { timer } from 'rxjs/observable/timer';
 
 @Component({
     selector: 'app-dbikes-dashboard-component',
@@ -9,50 +10,74 @@ import { DBikesModel } from './dbikes.model';
     styleUrls: ['./dbikes-dashboard.component.css']
 })
 export class DBikesDashboardComponent implements OnInit {
-    obs: Observable<any>;
+    polltime: number = 15000;
+    pagetimeouttime: number = 1000 * 60 * 30;       // 30mins is generous
     results: DBikesModel[];
     lowBikeLimit: number = 3;
-
     selectedStation: number = 2;
     lastupdate: number;
+    liveUpdateBoolean: boolean = false;
+
+    DBikesObs$: Observable<DBikesModel[]>;         // will swap out method calls as required
+    DBikesSubscription$: Subscription;
+    public timerObs$: Observable<any>;
+    public timerSub$: Subscription;
 
     constructor(
         private bikeService: DBikesService
     ) { }
 
     ngOnInit() {
-        this.obs = this.bikeService.SearchAll();
+        this.timerObs$ = timer(0, this.polltime);
+        this.DBikesObs$ = this.bikeService.SearchAll();
+        this.timerSub$ = this.timerObs$.subscribe(t => {
+            if (this.liveUpdateBoolean) {
+                this.DBikesSubscription$ = this.DBikesObs$.subscribe(x => {
+                    this.ParseResults(x);
+                    this.CheckSubscriptionUnsubscribe(t);       // auto-timeout clients to reduce server load
+                },
+                    error => this.HandleHTTPError(error)
+                );
+            }
+            else {
+                // do nothing
+            }
+        });
+    }
+   
+    ParseResults(x: DBikesModel[]) {
+        let r = [];
+        for (let el in x) {
+            r.push(new DBikesModel(x[el]));
+        }
+        this.results = r;
+        this.lastupdate = Date.now();
+    }
+    
+    ToggleLiveUpdate() {
+        this.liveUpdateBoolean = this.liveUpdateBoolean == true ? false : true;
+    }
+
+    CheckSubscriptionUnsubscribe(x: any) {
+                    // disable autoupdate after set time, to counteract client pages left open impacting server
+        if (x >= (this.pagetimeouttime / this.polltime)) {
+            this.timerSub$.unsubscribe();
+            alert('Page timeout: auto-updates disabled after ' +
+                (this.pagetimeouttime / 1000) + ' seconds. Please refresh page to continue');
+            document.getElementById('SearchAllBtn').setAttribute('disabled', 'true');
+            document.getElementById('SearchSingleBtn').setAttribute('disabled', 'true');
+            document.getElementById('ToggleLiveUpdateBtn').setAttribute('disabled', 'true');
+            document.getElementById('results').remove();
+        }
     }
 
     SearchAllStations() {
-        this.obs.subscribe(x => {
-            let r = [];
-            for (let el in x) {
-                r.push(new DBikesModel(x[el]));
-            }
-            this.results = r;
-            this.lastupdate = Date.now();
-        },
-            error => {
-                this.HandleHTTPError(error);
-            }
-        );
-    }
+        this.DBikesObs$ = this.bikeService.SearchAll();
 
-    SearchSingleStation() {
-        let station = this.selectedStation;         // model bound to html
-        this.bikeService.SearchSingle(station)
-            .subscribe(x => {
-                let b = new DBikesModel(x);
-                this.results = [];
-                this.results.push(b);
-                let c = x as DBikesModel;
-
-                this.lastupdate = Date.now();
+        this.DBikesObs$.toPromise().then(x => {     // fire once on click, while waiting for timerObs$
+                this.ParseResults(x);
             },
-            error => {
-                this.HandleHTTPError(error);
-            }
+            error => this.HandleHTTPError(error)
         );
     }
 
@@ -60,21 +85,24 @@ export class DBikesDashboardComponent implements OnInit {
         alert('TODO: set auto-update');
     }
 
-    ShowNearbyStations(station:number) {
-        //let station = 15;
-        this.bikeService.SearchNearby(station)
-            .subscribe(x => {
-                let r = [];
-                for (let el in x) {
-                    r.push(new DBikesModel(x[el]));
-                }
-                this.results = r;
+    SearchSingleStation() {
+        this.DBikesObs$ = this.bikeService.SearchSingle(this.selectedStation);
 
-                this.lastupdate = Date.now();
-            },
-            error => {
-                this.HandleHTTPError(error);
-            }
+        this.DBikesObs$.toPromise().then(x => {    // fire once on click, while waiting for timerObs$
+            this.ParseResults(x);
+        },
+            error => this.HandleHTTPError(error)
+        );
+
+    }
+
+    ShowNearbyStations(stationNum: number) {
+        this.DBikesObs$ = this.bikeService.SearchNearby(stationNum);
+
+        this.DBikesObs$.toPromise().then(x => {    // fire once on click, while waiting for timerObs$
+            this.ParseResults(x);
+        },
+            error => this.HandleHTTPError(error)
         );
     }
 
