@@ -6,25 +6,20 @@
              mc:Ignorable="d"
              x:Class="DBikesXamarin.MainPage">
 
-    <StackLayout>
-        <Label Text="DublinBikes"
-               FontSize="Subtitle"/>
-
-        <Label Text="Enter your name below:"/>
-        <Entry x:Name="NameEntry"
-            
-            />
-        <Button Text="Say Hello!"
-                FontSize="Large"
-                HorizontalOptions="Start"
-                x:Name="button1"
-                Clicked="HelloButtonClicked"/>
-       
-        <Label FontSize="Large"
-                x:Name="HelloLabel"
-               />
-        
-    </StackLayout>
+                    <!--    from    https://www.youtube.com/watch?v=fbmUT0wlPG4     -->
+   
+    <ListView x:Name="StationsListView" Margin="20">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <StackLayout Orientation="Horizontal" BackgroundColor="LightBlue">
+                        <Label Text="{Binding stationNumber}" TextColor="Blue"></Label>
+                        <Label Text="{Binding stationName}" ></Label>
+                    </StackLayout>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
 
 
 </ContentPage>

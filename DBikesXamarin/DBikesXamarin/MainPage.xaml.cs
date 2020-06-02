@@ -1,9 +1,6 @@
-﻿using System;
+﻿using DBikesXamarin.Helpers;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace DBikesXamarin
@@ -13,18 +10,24 @@ namespace DBikesXamarin
     [DesignTimeVisible(false)]
     public partial class MainPage : ContentPage
     {
-
+        List<BikeStation> stations;
         public MainPage()
         {
             InitializeComponent();
+            GetStations();
         }
 
-        async void HelloButtonClicked(object sender, EventArgs e)
+        public async void GetStations()
         {
-            string inputName = NameEntry.Text;
-             HelloLabel.Text = "hello " + inputName;
-            await DisplayAlert("Welcome!", "Nice to meet you, "+inputName, "Continue");
+            stations = await DBikesHttpHelper.GetAllStations();
+            StationsListView.ItemsSource = stations;
+        }
+
+        public async void popup(string result = "blank message")
+        {
+            await DisplayAlert("Welcome!", result, "Continue");
         }
 
     }
+
 }

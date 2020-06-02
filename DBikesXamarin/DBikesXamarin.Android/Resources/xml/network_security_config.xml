@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<network-security-config>
+  <domain-config cleartextTrafficPermitted="true">
+    <domain includeSubdomains="true">10.0.2.2</domain>
+  </domain-config>
+
+  <!--   solution to "cleartext HTTP Traffic not permitted" error, as per
+https://stackoverflow.com/questions/45940861/android-8-cleartext-http-traffic-not-permitted  -->
+</network-security-config>
