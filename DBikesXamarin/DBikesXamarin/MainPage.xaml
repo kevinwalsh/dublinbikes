@@ -2,24 +2,72 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:converters="clr-namespace:DBikesXamarin"
              mc:Ignorable="d"
              x:Class="DBikesXamarin.MainPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:IsLessThanConverter x:Key="IsLessThanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-                    <!--    from    https://www.youtube.com/watch?v=fbmUT0wlPG4     -->
-   
-    <ListView x:Name="StationsListView" Margin="20">
+
+    <StackLayout>
+        <!--    "COLUMN HEADERS"    -->
+        <StackLayout Orientation="Horizontal" BackgroundColor="LightGray">
+            <Label Text="   ID" WidthRequest="50" FontSize="Medium"/>
+            <Label Text="Station name" WidthRequest="180" FontSize="Medium"/>
+            <Label Text="Free Bikes/ Stands" FontSize="Medium"/>
+        </StackLayout>
+        
+        <!--    MAIN LIST   -->
+        <ListView x:Name="StationsListView" >
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>
-                    <StackLayout Orientation="Horizontal" BackgroundColor="LightBlue">
-                        <Label Text="{Binding stationNumber}" TextColor="Blue"></Label>
-                        <Label Text="{Binding stationName}" ></Label>
+                    <StackLayout Orientation="Horizontal" >
+                        <Label Text="{Binding stationNumber}" TextColor="Blue" WidthRequest="50" HorizontalTextAlignment="Center" FontSize="Medium"/>
+                            <Label Text="{Binding stationName}" WidthRequest="250" FontSize="Medium"/>
+                            <Label Text="{Binding available}" FontSize="Medium">
+                                <Label.Triggers>
+                        <!--    Condition LessThan/ etc will require a ValueConverter in code. Done below.
+                                    Simple approach done here, as is sufficient for now  -->
+                                    <DataTrigger Binding="{Binding available}" Value="3" TargetType="Label">
+                                        <Setter Property="TextColor" Value="Red"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding available}" Value="2" TargetType="Label">
+                                        <Setter Property="TextColor" Value="Red"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding available}" Value="1" TargetType="Label">
+                                        <Setter Property="TextColor" Value="Red"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding available}" Value="0" TargetType="Label">
+                                        <Setter Property="TextColor" Value="Red"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        
+                            <Label Text=" / "/>
+                            <Label Text="{Binding free}" FontSize="Medium">
+                                <Label.Triggers>
+                                    <!--    Condition LessThan/ etc : Alt dataConverter approach was manageable afterall.
+                                        Needed to create IsLessThanConverter, and add xmlns:converters  reference up top here-->
+                                    <DataTrigger Binding="{Binding Path=free,
+                                        Converter={StaticResource IsLessThanConverter},
+                                        ConverterParameter=3}"
+                                                 TargetType="Label"
+                                                 Value="true">
+                                        <Setter Property="TextColor" Value="Red"/>
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
                     </StackLayout>
                 </ViewCell>
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>
+    </StackLayout>
 
 
 </ContentPage>
