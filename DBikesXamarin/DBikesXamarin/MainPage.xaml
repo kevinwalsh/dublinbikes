@@ -14,6 +14,16 @@
 
 
     <StackLayout>
+        <!--    BUTTONS     -->
+        <StackLayout Orientation="Horizontal">
+            <Button Text="Search All" Clicked="SearchAllButton_Clicked" BackgroundColor="DeepSkyBlue" Margin="10"/>
+            <StackLayout >
+                <Label Text="Watching Station:"/>
+                <Label x:Name="selectedStation" Text="{Binding stationName}"/>
+            </StackLayout>
+            <Button Text="Clear Watcher" Clicked="ClearWatcher_Clicked"  Margin="10"
+                    BackgroundColor="LightGray" HorizontalOptions="EndAndExpand"/>
+</StackLayout>
         <!--    "COLUMN HEADERS"    -->
         <StackLayout Orientation="Horizontal" BackgroundColor="LightGray">
             <Label Text="   ID" WidthRequest="50" FontSize="Medium"/>
@@ -22,10 +32,17 @@
         </StackLayout>
         
         <!--    MAIN LIST   -->
-        <ListView x:Name="StationsListView" >
+        <ListView x:Name="StationsListView" 
+                  ItemTapped="StationsListView_ItemTapped"
+                  ItemSelected="StationsListView_ItemSelected">
         <ListView.ItemTemplate>
             <DataTemplate>
                 <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Clicked="Menu_FindNearby_Clicked" Text="Find Nearby" CommandParameter="{Binding .}" />
+                            <MenuItem Clicked="Menu_WatchStation_Clicked" Text="Watch Station" CommandParameter="{Binding .}"/>
+                        </ViewCell.ContextActions>
+                    
                     <StackLayout Orientation="Horizontal" >
                         <Label Text="{Binding stationNumber}" TextColor="Blue" WidthRequest="50" HorizontalTextAlignment="Center" FontSize="Medium"/>
                             <Label Text="{Binding stationName}" WidthRequest="250" FontSize="Medium"/>

@@ -11,22 +11,72 @@ namespace DBikesXamarin
     public partial class MainPage : ContentPage
     {
         List<BikeStation> stations;
+        
         public MainPage()
         {
             InitializeComponent();
-            GetStations();
+            GetAllStations();
         }
 
-        public async void GetStations()
+        public async void GetAllStations()
         {
             stations = await DBikesHttpHelper.GetAllStations();
             StationsListView.ItemsSource = stations;
         }
 
+        public async void GetNearbyStations(int stationId)
+        {
+            stations = await DBikesHttpHelper.GetNearbyStations(stationId);
+            StationsListView.ItemsSource = stations;
+        }
+
+        public void SetSelectedStation(BikeStation bs)
+        {
+            selectedStation.BindingContext = bs;
+        }
+
+
         public async void popup(string result = "blank message")
         {
             await DisplayAlert("Welcome!", result, "Continue");
         }
+
+    #region ButtonEvents
+        private void SearchAllButton_Clicked(object sender, System.EventArgs e)
+        {
+            GetAllStations();
+        }
+
+        private void StationsListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            BikeStation stn2 = (BikeStation) e.Item;    //test
+        }
+
+        private void StationsListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)  
+                                        // similar to itemtapped; but doesnt fire if this item was previously selected
+        {
+            BikeStation stn2 = (BikeStation)e.SelectedItem; //test
+        }
+
+        private void Menu_FindNearby_Clicked(object sender, System.EventArgs e)
+        {
+            var menuitem = (MenuItem)sender;
+            var station = (BikeStation) menuitem.CommandParameter;
+            GetNearbyStations(station.stationNumber);
+        }
+        private void Menu_WatchStation_Clicked(object sender, System.EventArgs e)
+        {
+            var menuitem = (MenuItem)sender;
+            var station = (BikeStation)menuitem.CommandParameter;
+            SetSelectedStation(station);
+            popup("TODO: Set listener to update this station");
+        }
+        private void ClearWatcher_Clicked(object sender, System.EventArgs e)
+        {
+            SetSelectedStation(null);
+        }
+        #endregion
+
 
     }
 

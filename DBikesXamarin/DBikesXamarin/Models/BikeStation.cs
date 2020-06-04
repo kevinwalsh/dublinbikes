@@ -13,7 +13,7 @@ namespace DBikesXamarin
 
     }
 
-    class BikeStation
+    public class BikeStation
     {
 
 
