@@ -10,17 +10,32 @@ namespace DBikesXamarin
         public async static Task<string> HttpGetRequest(string url)
         {
             HttpClient client = new HttpClient();
+            client.Timeout=TimeSpan.FromSeconds(5);     // Max wait time
 
-            var req = new HttpRequestMessage();
-            req.RequestUri = new Uri(url);
-            req.Headers.Add("Host", "localhost:51754");
+            HttpResponseMessage response;
+            string myjson = "";
+            try {
+                var req = new HttpRequestMessage();
+                req.RequestUri = new Uri(url);
+                req.Headers.Add("Host", "localhost:51754");
+                response = await client.SendAsync(req);
 
-            HttpResponseMessage response = await client.SendAsync(req);
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new System.Exception("KW HTTP EXCEPTION");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new System.Exception("KW HTTP EXCEPTION");
+                }
+                 myjson = await response.Content.ReadAsStringAsync();
             }
-            var myjson = await response.Content.ReadAsStringAsync();
+            
+            catch (Exception exception)
+            {
+                                            // catch expected errors, handle scenario on UI when json returns null
+                if (exception.Message == "Socket closed" || exception.Message == "Canceled")
+                {
+                    Console.WriteLine("KW: Socket/Server exception: couldn't retrieve response from server. \n " + exception);
+                }
+                else throw exception;
+            }
             return myjson;
         }
 

@@ -21,13 +21,13 @@ namespace DBikesXamarin
         public async void GetAllStations()
         {
             stations = await DBikesHttpHelper.GetAllStations();
-            StationsListView.ItemsSource = stations;
+            DisplayStations(stations);
         }
 
         public async void GetNearbyStations(int stationId)
         {
             stations = await DBikesHttpHelper.GetNearbyStations(stationId);
-            StationsListView.ItemsSource = stations;
+            DisplayStations(stations);
         }
 
         public void SetSelectedStation(BikeStation bs)
@@ -35,6 +35,14 @@ namespace DBikesXamarin
             selectedStation.BindingContext = bs;
         }
 
+        public async void DisplayStations(List<BikeStation> stations)
+        {
+            if (stations == null)
+            {
+                await DisplayAlert("ERROR", "Error retrieving stations list from server", "OK");
+            }
+             StationsListView.ItemsSource = stations;
+        }
 
         public async void popup(string result = "blank message")
         {
