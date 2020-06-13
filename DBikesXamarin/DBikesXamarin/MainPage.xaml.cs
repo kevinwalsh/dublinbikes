@@ -1,6 +1,8 @@
 ﻿using DBikesXamarin.Helpers;
+using DBikesXamarin.Helpers.Notifications;
 using System.Collections.Generic;
 using System.ComponentModel;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace DBikesXamarin
@@ -44,12 +46,29 @@ namespace DBikesXamarin
              StationsListView.ItemsSource = stations;
         }
 
-        public async void popup(string result = "blank message")
+
+
+        #region UI_Messages
+        public async void MakeDialogPopup(string result = "blank message")
         {
             await DisplayAlert("Welcome!", result, "Continue");
         }
 
-    #region ButtonEvents
+        public void MakeNotification(BikeStation bs)
+        {
+            var title = bs.stationName;
+            var msg = bs.available + " bikes, " + bs.free + " stations remaining";
+            DependencyService.Get<INotification>().Notify(title, msg);
+        }
+
+        public void MakeToastNotification(string msg)
+        {
+            DependencyService.Get<INotification>().ToastNotify(msg);
+        }
+
+        #endregion
+
+        #region ButtonEvents
         private void SearchAllButton_Clicked(object sender, System.EventArgs e)
         {
             GetAllStations();
@@ -77,11 +96,15 @@ namespace DBikesXamarin
             var menuitem = (MenuItem)sender;
             var station = (BikeStation)menuitem.CommandParameter;
             SetSelectedStation(station);
-            popup("TODO: Set listener to update this station");
+            MakeNotification(station);
+            MakeDialogPopup("TODO: Set listener to update this station");
         }
         private void ClearWatcher_Clicked(object sender, System.EventArgs e)
         {
             SetSelectedStation(null);
+            Vibration.Vibrate(200);
+            MakeToastNotification("Station Watcher Cleared!");
+
         }
         #endregion
 
