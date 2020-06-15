@@ -1,7 +1,10 @@
 ﻿using DBikesXamarin.Helpers;
 using DBikesXamarin.Helpers.Notifications;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Timers;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 
@@ -13,11 +16,20 @@ namespace DBikesXamarin
     public partial class MainPage : ContentPage
     {
         List<BikeStation> stations;
-        
+        Timer mytimer;
+        int repeatIntervalMilliseconds = 15000;
+
         public MainPage()
         {
             InitializeComponent();
             GetAllStations();
+            CreateTimer();
+        }
+
+        protected override void OnDisappearing()        // when app closed
+        {
+            mytimer.Stop();
+            DependencyService.Get<INotification>().ClearNotifications();
         }
 
         public async void GetAllStations()
@@ -32,9 +44,33 @@ namespace DBikesXamarin
             DisplayStations(stations);
         }
 
+        public async void GetSingleStation(int stationId)
+        {
+            stations = await DBikesHttpHelper.GetStation(stationId);
+            DisplayStations(stations);
+            if(selectedStation != null & stations != null)
+            {
+                SetSelectedStation(stations.First());
+            }
+        }
+
         public void SetSelectedStation(BikeStation bs)
         {
+            var oldStationData = selectedStation.BindingContext as BikeStation;
+            CheckForChanges(oldStationData, bs);
             selectedStation.BindingContext = bs;
+        }
+
+        public void CheckForChanges(BikeStation old, BikeStation stn)
+        {
+            if (old == null || stn == null || old.stationNumber != stn.stationNumber) { 
+                return;                 // ignore changes where station cleared, initially set, or target station changed
+            }
+            if (old.available != stn.available || old.free != stn.free)
+            {
+                MakeNotification(stn);
+                //Vibration.Vibrate(200);
+            }
         }
 
         public async void DisplayStations(List<BikeStation> stations)
@@ -46,7 +82,36 @@ namespace DBikesXamarin
              StationsListView.ItemsSource = stations;
         }
 
+        #region timer
 
+         void CreateTimer()
+        {
+            mytimer = new Timer();
+            mytimer.Interval = repeatIntervalMilliseconds;
+            mytimer.AutoReset = true;
+            mytimer.Elapsed += OnTimedEvent;
+        }
+
+        void StartTimer()
+        {
+            mytimer.Start();
+        }
+
+        private void StopTimer()
+        {
+            mytimer.Stop();
+        }
+
+        private async void OnTimedEvent(object source, ElapsedEventArgs e)
+        {
+            var stn = selectedStation.BindingContext as BikeStation;
+        
+            Device.BeginInvokeOnMainThread(() => {
+                GetSingleStation(stn.stationNumber);
+            });
+        }
+
+        #endregion
 
         #region UI_Messages
         public async void MakeDialogPopup(string result = "blank message")
@@ -95,15 +160,16 @@ namespace DBikesXamarin
         {
             var menuitem = (MenuItem)sender;
             var station = (BikeStation)menuitem.CommandParameter;
-            SetSelectedStation(station);
+            GetSingleStation(station.stationNumber);
             MakeNotification(station);
-            MakeDialogPopup("TODO: Set listener to update this station");
+            StartTimer();
         }
         private void ClearWatcher_Clicked(object sender, System.EventArgs e)
         {
             SetSelectedStation(null);
             Vibration.Vibrate(200);
             MakeToastNotification("Station Watcher Cleared!");
+            StopTimer();
 
         }
         #endregion

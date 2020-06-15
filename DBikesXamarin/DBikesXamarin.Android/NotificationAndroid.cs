@@ -51,6 +51,14 @@ namespace DBikesXamarin.Droid
             notificationManager.Notify(notification_id, b.Build());
         }
 
+        public void ClearNotifications()
+        {
+            if (notificationManager != null && channelCreated)
+            {
+                notificationManager.Cancel(notification_id);
+            }
+        }
+
         public void ToastNotify(string message)
         {
             var toast = Android.Widget.Toast.MakeText(Android.App.Application.Context, message, ToastLength.Long);
