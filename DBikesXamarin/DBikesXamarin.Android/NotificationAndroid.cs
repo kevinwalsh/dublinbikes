@@ -1,5 +1,7 @@
 ﻿using Android.App;
+using Android.Media;
 using Android.OS;
+using Android.Provider;
 using Android.Views;
 using Android.Widget;
 using DBikesXamarin.Droid;
@@ -14,9 +16,7 @@ namespace DBikesXamarin.Droid
         NotificationManager notificationManager;
 
         const string infoChannelId = "DBikesInfo";
-        const string infoChannelName = "DublinBikes_StationInfo";
-        const string infoChannelDescription = "DublinBikes station information.";
-      
+        const string warnChannelId = "DBikesWarn";
         int notification_id = 2003;
 
         void CreateNotificationChannel()
@@ -25,17 +25,21 @@ namespace DBikesXamarin.Droid
             notificationManager = (NotificationManager)Android.App.Application.Context.GetSystemService(
                 Android.App.Application.NotificationService
                 );
-            var infoChannel = new NotificationChannel(infoChannelId, infoChannelName, NotificationImportance.Low)
-                { Description = infoChannelDescription};
+            var infoChannel = new NotificationChannel(infoChannelId, "DublinBikes_StationInfo", NotificationImportance.Low)
+                { Description = "DublinBikes station information.", };
+            var warnChannel = new NotificationChannel(warnChannelId, "DublinBikes_StationWarning", NotificationImportance.High)
+                { Description = "DublinBikes station low bike/spaces warning." };
             notificationManager.CreateNotificationChannel(infoChannel);
+            notificationManager.CreateNotificationChannel(warnChannel);
             channelCreated = true;
         }
 
-        public void Notify(string title, string message)
+        public void Notify(string title, string message, bool ispriority)
         {
             if (channelCreated == false)    {   CreateNotificationChannel();    }
-            
-            var b = new Notification.Builder(Android.App.Application.Context, infoChannelId)
+
+            var targetchannel = ispriority ? warnChannelId : infoChannelId;
+            var b = new Notification.Builder(Android.App.Application.Context, targetchannel)
                 .SetContentTitle(title)
                 .SetContentText(message)
                 .SetSmallIcon(Resource.Drawable.abc_ic_star_black_48dp)

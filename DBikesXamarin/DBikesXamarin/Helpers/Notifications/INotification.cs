@@ -6,7 +6,7 @@ namespace DBikesXamarin.Helpers.Notifications
 {
     public interface INotification
     {
-        void Notify(string title, string message);
+        void Notify(string title, string message, bool ispriority);
         void ClearNotifications();
         void ToastNotify(string message);
     }

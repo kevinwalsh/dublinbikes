@@ -66,11 +66,17 @@ namespace DBikesXamarin
             if (old == null || stn == null || old.stationNumber != stn.stationNumber) { 
                 return;                 // ignore changes where station cleared, initially set, or target station changed
             }
-            if (old.available != stn.available || old.free != stn.free)
+
+            // if (old.available != stn.available || old.free != stn.free)       // simple "if changed"
+            var isPriority = false;
+            if ((stn.available <= 3 && stn.available < old.available)
+                || (stn.free <= 3 && stn.free < old.free))           // If full or almost-full, AND spots have been taken
             {
-                MakeNotification(stn);
+                isPriority = true;
                 //Vibration.Vibrate(200);
             }
+            MakeNotification(stn,isPriority);
+
         }
 
         public async void DisplayStations(List<BikeStation> stations)
@@ -119,11 +125,11 @@ namespace DBikesXamarin
             await DisplayAlert("Welcome!", result, "Continue");
         }
 
-        public void MakeNotification(BikeStation bs)
+        public void MakeNotification(BikeStation bs, bool isPriority)
         {
             var title = bs.stationName;
             var msg = bs.available + " bikes, " + bs.free + " stations remaining";
-            DependencyService.Get<INotification>().Notify(title, msg);
+            DependencyService.Get<INotification>().Notify(title, msg, isPriority) ;
         }
 
         public void MakeToastNotification(string msg)
@@ -161,7 +167,7 @@ namespace DBikesXamarin
             var menuitem = (MenuItem)sender;
             var station = (BikeStation)menuitem.CommandParameter;
             GetSingleStation(station.stationNumber);
-            MakeNotification(station);
+            MakeNotification(station, true);
             StartTimer();
         }
         private void ClearWatcher_Clicked(object sender, System.EventArgs e)
