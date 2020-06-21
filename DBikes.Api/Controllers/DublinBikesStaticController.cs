@@ -1,4 +1,5 @@
-﻿using DBikes.Api.Helpers.HTTPClient;
+﻿using DBikes.Api.Filters;
+using DBikes.Api.Helpers.HTTPClient;
 using DBikes.Api.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Web.Http;
 
 namespace DBikes.Api.Controllers
 {
-
+    [SimpleAuthentication]
     //    [Authorize]                 
     [RoutePrefix("api/DublinBikesStatic")]
     public class DublinBikesStaticController : ApiController

@@ -1,4 +1,5 @@
-﻿using DBikes.Api.Helpers.GPSHelper;
+﻿using DBikes.Api.Filters;
+using DBikes.Api.Helpers.GPSHelper;
 using DBikes.Api.Helpers.HTTPClient;
 using DBikes.Api.Models.DBikesModels;
 using DBikes.Api.Providers;
@@ -12,8 +13,8 @@ using System.Xml.Serialization;
 
 namespace DBikes.Api.Controllers
 {
-
-    //    [Authorize]                 
+    [SimpleAuthentication]
+    //[HMACAuthentication]            //https://bitoftech.net/2014/12/15/secure-asp-net-web-api-using-api-key-authentication-hmac-authentication/
     [RoutePrefix("api/DublinBikes")]
     public class DublinBikesController : ApiController
     {

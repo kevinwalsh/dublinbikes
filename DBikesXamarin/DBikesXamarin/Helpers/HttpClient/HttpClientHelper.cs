@@ -10,7 +10,7 @@ namespace DBikesXamarin
         public async static Task<string> HttpGetRequest(string url)
         {
             HttpClient client = new HttpClient();
-            client.Timeout=TimeSpan.FromSeconds(5);     // Max wait time
+            client.Timeout=TimeSpan.FromSeconds(15);     // Max wait time
 
             HttpResponseMessage response;
             string myjson = "";
@@ -18,6 +18,7 @@ namespace DBikesXamarin
                 var req = new HttpRequestMessage();
                 req.RequestUri = new Uri(url);
                 req.Headers.Add("Host", "localhost:51754");
+                req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateSimpleToken());
                 response = await client.SendAsync(req);
 
                 if (!response.IsSuccessStatusCode)
@@ -37,6 +38,15 @@ namespace DBikesXamarin
                 else throw exception;
             }
             return myjson;
+        }
+
+        public static string GenerateSimpleToken()
+        {
+//            var username = "xamarin";
+//            var password = "statictoken";
+//            var tok = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{password}"));
+              var tok = "eGFtYXJpbjpzdGF0aWN0ZXN0";
+            return tok;
         }
 
     }
