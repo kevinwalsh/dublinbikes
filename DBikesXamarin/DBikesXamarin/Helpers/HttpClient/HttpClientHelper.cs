@@ -42,10 +42,17 @@ namespace DBikesXamarin
 
         public static string GenerateSimpleToken()
         {
-//            var username = "xamarin";
-//            var password = "statictoken";
-//            var tok = Convert.ToBase64String(Encoding.UTF8.GetBytes($"{username}:{password}"));
-              var tok = "eGFtYXJpbjpzdGF0aWN0ZXN0";
+            var key = "dublinbikestoken";
+            Int32 hash = 0;
+            // var chararray = (key + DateTime.Today.ToString("yyyy-MM-dd")).ToCharArray();         //daily
+            var chararray = (key + ((DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) /1000000));        // round to 15mins
+
+            for (var i = 0; i < chararray.Length; i++)
+            {
+                hash = ((hash << 5) - hash) + chararray[i];
+                hash |= 0;
+            }
+            var tok = hash.ToString();
             return tok;
         }
 
