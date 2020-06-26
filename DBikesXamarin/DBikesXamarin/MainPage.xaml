@@ -16,19 +16,19 @@
     <StackLayout>
         <!--    BUTTONS     -->
         <StackLayout Orientation="Horizontal">
-            <Button Text="Search All" Clicked="SearchAllButton_Clicked" BackgroundColor="DeepSkyBlue" Margin="10"/>
+            <Button Text="Search All" Clicked="SearchAllButton_Clicked" WidthRequest="80" BackgroundColor="DeepSkyBlue" Margin="10"/>
             <StackLayout >
                 <Label Text="Watching Station:"/>
                 <Label x:Name="selectedStation" Text="{Binding stationName}"/>
             </StackLayout>
-            <Button Text="Clear Watcher" Clicked="ClearWatcher_Clicked"  Margin="10"
+            <Button Text="Clear Watcher" Clicked="ClearWatcher_Clicked" WidthRequest="100" Margin="10"
                     BackgroundColor="LightGray" HorizontalOptions="EndAndExpand"/>
 </StackLayout>
         <!--    "COLUMN HEADERS"    -->
         <StackLayout Orientation="Horizontal" BackgroundColor="LightGray">
             <Label Text="   ID" WidthRequest="50" FontSize="Medium"/>
-            <Label Text="Station name" WidthRequest="180" FontSize="Medium"/>
-            <Label Text="Free Bikes/ Stands" FontSize="Medium"/>
+            <Label Text="Station name" FontSize="Medium" HorizontalOptions="FillAndExpand"/>
+            <Label Text="&#x1f6b2; / &#x26fd;" WidthRequest="80" HorizontalOptions="End" FontSize="Medium"/>
         </StackLayout>
         
         <!--    MAIN LIST   -->
@@ -45,8 +45,8 @@
                     
                     <StackLayout Orientation="Horizontal" >
                         <Label Text="{Binding stationNumber}" TextColor="Blue" WidthRequest="50" HorizontalTextAlignment="Center" FontSize="Medium"/>
-                            <Label Text="{Binding stationName}" WidthRequest="250" FontSize="Medium"/>
-                            <Label Text="{Binding available}" FontSize="Medium">
+                            <Label Text="{Binding stationName}" WidthRequest="180" FontSize="Medium"  HorizontalOptions="FillAndExpand"/>
+                            <Label Text="{Binding available}" WidthRequest="30" FontSize="Medium" >
                                 <Label.Triggers>
                         <!--    Condition LessThan/ etc will require a ValueConverter in code. Done below.
                                     Simple approach done here, as is sufficient for now  -->
@@ -65,8 +65,8 @@
                                 </Label.Triggers>
                             </Label>
                         
-                            <Label Text=" / "/>
-                            <Label Text="{Binding free}" FontSize="Medium">
+                            <Label Text="/"/>
+                            <Label Text="{Binding free}" WidthRequest="30" FontSize="Medium" >
                                 <Label.Triggers>
                                     <!--    Condition LessThan/ etc : Alt dataConverter approach was manageable afterall.
                                         Needed to create IsLessThanConverter, and add xmlns:converters  reference up top here-->
