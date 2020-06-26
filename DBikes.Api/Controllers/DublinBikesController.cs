@@ -87,8 +87,7 @@ namespace DBikes.Api.Controllers
             }
             
             //            return stations;
-            return stations.Where(x=>x.stationNumber < 15).OrderBy(x=>x.stationNumber);     
-                                //  filter 110-item list to reduce response size
+            return stations.OrderBy(x=>x.stationNumber);
         }
 
         [HttpGet]
