@@ -2,7 +2,9 @@
 
 <network-security-config>
   <domain-config cleartextTrafficPermitted="true">
-    <domain includeSubdomains="true">10.0.2.2</domain>
+    <domain includeSubdomains="true">10.0.2.2</domain>  <!-- to reach Locally hosted API  -->
+    <domain includeSubdomains="true">dublinbikesapi.azurewebsites.net</domain>   <!--  Global/internet  -->
+    
   </domain-config>
 
   <!--   solution to "cleartext HTTP Traffic not permitted" error, as per

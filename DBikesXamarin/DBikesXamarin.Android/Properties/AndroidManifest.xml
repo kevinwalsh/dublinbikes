@@ -6,4 +6,14 @@
                  ></application>
   <!--    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />  -->
           <uses-permission android:name="android.permission.VIBRATE" />
-  </manifest>
+          <uses-permission android:name="android.permission.INTERNET" />
+            
+              <!-- NB, android emulator can do http calls LOCALLY, but note that ALL internet calls are disabled by default!
+                  i.e. adding "INTERNET" permission isnt enough for emulator to reach any remote services. 
+                  SOLUTION: edit emulator launch settings, to set a DNS server
+                    1) Tools-> options;  Xamarin -> Android Settings -> "Additional Emulator Launch Arguments"
+                    2) value =    =dns-server 8.8.8.8
+                    3) restart emulator
+            -->
+  
+</manifest>

@@ -6,9 +6,10 @@ namespace DBikesXamarin.Helpers
 {
     static class DBikesHttpHelper
     {
-        static string baseURL ="http://10.0.2.2:51754/api/DublinBikes";
+        //static string baseURL ="http://10.0.2.2:51754/api/DublinBikes";
                         // Alias to Loopback to localhost IP; android emulators can't directly access localhost
                                 //https://developer.android.com/studio/run/emulator-networking
+        static string baseURL ="http://dublinbikesapi.azurewebsites.net/api/DublinBikes";
         static int StationRadiusMetres = 500;
 
         public static async Task<List<BikeStation>> GetAllStations()

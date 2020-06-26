@@ -17,13 +17,15 @@ namespace DBikesXamarin
             try {
                 var req = new HttpRequestMessage();
                 req.RequestUri = new Uri(url);
-                req.Headers.Add("Host", "localhost:51754");
+                // req.Headers.Add("Host", "localhost:51754");
+                req.Headers.Add("Host", "dublinbikesapi.azurewebsites.net");            // omit http & www for web addresses!
+
                 req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateSimpleToken());
                 response = await client.SendAsync(req);
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new System.Exception("KW HTTP EXCEPTION");
+                    throw new System.Exception("KW HTTP EXCEPTION");            // if 400/ bad request, doublecheck host headers
                 }
                  myjson = await response.Content.ReadAsStringAsync();
             }
