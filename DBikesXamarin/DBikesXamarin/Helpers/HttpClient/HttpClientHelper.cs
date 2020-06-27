@@ -33,7 +33,10 @@ namespace DBikesXamarin
             catch (Exception exception)
             {
                                             // catch expected errors, handle scenario on UI when json returns null
-                if (exception.Message == "Socket closed" || exception.Message == "Canceled")
+                if (exception.Message == "Socket closed" 
+                    || exception.Message == "Canceled" || 
+                    exception.Message.Contains("Unable to resolve host")
+                    )
                 {
                     Console.WriteLine("KW: Socket/Server exception: couldn't retrieve response from server. \n " + exception);
                 }

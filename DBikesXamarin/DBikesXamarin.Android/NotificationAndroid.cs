@@ -49,7 +49,7 @@ namespace DBikesXamarin.Droid
             
             // Make notification clickable to reopen app
             Android.Content.Intent intent = new Android.Content.Intent(Android.App.Application.Context, typeof(MainActivity));
-            PendingIntent pendingIntent = PendingIntent.GetActivity(Android.App.Application.Context, 0, intent, 0);
+            PendingIntent pendingIntent = PendingIntent.GetActivity(Android.App.Application.Context, 0, intent, PendingIntentFlags.UpdateCurrent);
             b.SetContentIntent(pendingIntent);
 
             notificationManager.Notify(notification_id, b.Build());
