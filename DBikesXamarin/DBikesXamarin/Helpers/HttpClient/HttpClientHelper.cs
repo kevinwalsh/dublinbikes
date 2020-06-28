@@ -25,6 +25,7 @@ namespace DBikesXamarin
 
                 if (!response.IsSuccessStatusCode)
                 {
+                    Console.WriteLine("KW HTTP EXCEPTION: response = " + response);
                     throw new System.Exception("KW HTTP EXCEPTION");            // if 400/ bad request, doublecheck host headers
                 }
                  myjson = await response.Content.ReadAsStringAsync();

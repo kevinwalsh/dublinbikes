@@ -17,6 +17,7 @@ namespace DBikesXamarin
     {
         List<BikeStation> stations;
         Timer mytimer;
+        int timerLoopsCount;
         int repeatIntervalMilliseconds = 15000;
 
         public MainPage()
@@ -29,6 +30,7 @@ namespace DBikesXamarin
         protected override void OnDisappearing()        // when app closed
         {
             mytimer.Stop();
+            mytimer.Dispose();
             DependencyService.Get<INotification>().ClearNotifications();
         }
 
@@ -107,13 +109,29 @@ namespace DBikesXamarin
         {
             mytimer.Stop();
         }
+        private void DisposeTimer()
+        {
+            mytimer.Dispose();
+        }
 
         private async void OnTimedEvent(object source, ElapsedEventArgs e)
         {
             var stn = selectedStation.BindingContext as BikeStation;
         
             Device.BeginInvokeOnMainThread(() => {
-                GetSingleStation(stn.stationNumber);
+                timerLoopsCount++;
+                if (timerLoopsCount * repeatIntervalMilliseconds >= 60000*30)
+                {
+                    SetSelectedStation(null);
+                    MakeNotification(null, true);
+                    MakeDialogPopup("Timer autorefresh disabled after 30 minutes; Please re-set if still needed");
+                    mytimer.Stop();
+
+                }
+                else
+                {
+                    GetSingleStation(stn.stationNumber);
+                }
             });
         }
 
@@ -127,8 +145,17 @@ namespace DBikesXamarin
 
         public void MakeNotification(BikeStation bs, bool isPriority)
         {
-            var title = bs.stationName;
-            var msg = bs.available + " bikes, " + bs.free + " stations remaining";
+            string title, msg = "";
+            if (bs == null)
+            {
+                title = "Station Watcher expired";
+                msg = "Timeout after 30 minutes";
+            }
+            else
+            {
+                title = bs.stationName;
+                msg = bs.available + " bikes, " + bs.free + " stations remaining";
+            }
             DependencyService.Get<INotification>().Notify(title, msg, isPriority) ;
         }
 
@@ -168,6 +195,7 @@ namespace DBikesXamarin
             var station = (BikeStation)menuitem.CommandParameter;
             GetSingleStation(station.stationNumber);
             MakeNotification(station, true);
+            timerLoopsCount = 0;
             StartTimer();
         }
         private void ClearWatcher_Clicked(object sender, System.EventArgs e)
