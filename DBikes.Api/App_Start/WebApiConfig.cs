@@ -32,8 +32,9 @@ namespace DBikes.Api
             config.Formatters.JsonFormatter.SerializerSettings.ReferenceLoopHandling
                 = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 
-            // KW CORS Localhost
-            EnableCorsAttribute cors = new EnableCorsAttribute("http://localhost:60724", "*", "*");
+            // KW CORS
+            var corsOrigins= "http://localhost:60724,http://dublinbikesweb.azurewebsites.net";
+            EnableCorsAttribute cors = new EnableCorsAttribute(corsOrigins, "*", "*"); 
             config.EnableCors(cors);
 
         }
