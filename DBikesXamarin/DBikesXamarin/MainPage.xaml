@@ -17,6 +17,7 @@
         <!--    BUTTONS     -->
         <StackLayout Orientation="Horizontal">
             <Button Text="Search All" Clicked="SearchAllButton_Clicked" WidthRequest="80" BackgroundColor="DeepSkyBlue" Margin="10"/>
+            <Image x:Name="spinner" Source="Assets/loading.gif" IsAnimationPlaying="True" IsVisible="true" WidthRequest="30"></Image>
             <StackLayout >
                 <Label Text="Watching Station:"/>
                 <Label x:Name="selectedStation" Text="{Binding stationName}"/>

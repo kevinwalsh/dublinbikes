@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\bikeicon.png" />
+    <AndroidResource Include="Resources\drawable\loading.gif" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DBikesXamarin\DBikesXamarin.csproj">

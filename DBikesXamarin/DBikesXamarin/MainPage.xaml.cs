@@ -36,19 +36,25 @@ namespace DBikesXamarin
 
         public async void GetAllStations()
         {
+            spinner.IsVisible = true;
             stations = await DBikesHttpHelper.GetAllStations();
+            spinner.IsVisible = false;
             DisplayStations(stations);
         }
 
         public async void GetNearbyStations(int stationId)
         {
+            spinner.IsVisible = true;
             stations = await DBikesHttpHelper.GetNearbyStations(stationId);
+            spinner.IsVisible = false;
             DisplayStations(stations);
         }
 
         public async void GetSingleStation(int stationId)
         {
+            spinner.IsVisible = true;
             stations = await DBikesHttpHelper.GetStation(stationId);
+            spinner.IsVisible = false;
             DisplayStations(stations);
             if(selectedStation != null & stations != null)
             {

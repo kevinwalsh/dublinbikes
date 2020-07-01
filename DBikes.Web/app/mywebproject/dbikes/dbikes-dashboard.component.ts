@@ -10,6 +10,7 @@ import { timer } from 'rxjs/observable/timer';
     styleUrls: ['./dbikes-dashboard.component.css']
 })
 export class DBikesDashboardComponent implements OnInit {
+    loading: boolean = true;
     polltime: number = 15000;
     pagetimeouttime: number = 1000 * 60 * 30;       // 30mins is generous
     results: DBikesModel[];
@@ -43,9 +44,11 @@ export class DBikesDashboardComponent implements OnInit {
                 // do nothing
             }
         });
+        this.loading = false;
     }
    
     ParseResults(x: DBikesModel[]) {
+        this.loading = false;
         let r = [];
         for (let el in x) {
             r.push(new DBikesModel(x[el]));
@@ -72,6 +75,7 @@ export class DBikesDashboardComponent implements OnInit {
     }
 
     SearchAllStations() {
+        this.loading = true;
         this.DBikesObs$ = this.bikeService.SearchAll();
 
         this.DBikesObs$.toPromise().then(x => {     // fire once on click, while waiting for timerObs$
@@ -81,11 +85,9 @@ export class DBikesDashboardComponent implements OnInit {
         );
     }
 
-    WatchStation() {
-        alert('TODO: set auto-update');
-    }
 
     SearchSingleStation() {
+        this.loading = true;
         this.DBikesObs$ = this.bikeService.SearchSingle(this.selectedStation);
 
         this.DBikesObs$.toPromise().then(x => {    // fire once on click, while waiting for timerObs$
@@ -97,6 +99,7 @@ export class DBikesDashboardComponent implements OnInit {
     }
 
     ShowNearbyStations(stationNum: number) {
+        this.loading = true;
         this.DBikesObs$ = this.bikeService.SearchNearby(stationNum);
 
         this.DBikesObs$.toPromise().then(x => {    // fire once on click, while waiting for timerObs$
@@ -107,6 +110,7 @@ export class DBikesDashboardComponent implements OnInit {
     }
 
     HandleHTTPError(error: any) {
+        this.loading = false;
         switch (error.status) {
             case 404:
                 alert("404 Error: station not found:");
