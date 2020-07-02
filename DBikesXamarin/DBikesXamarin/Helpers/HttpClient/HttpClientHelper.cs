@@ -26,7 +26,14 @@ namespace DBikesXamarin
                 if (!response.IsSuccessStatusCode)
                 {
                     Console.WriteLine("KW HTTP EXCEPTION: response = " + response);
-                    throw new System.Exception("KW HTTP EXCEPTION");            // if 400/ bad request, doublecheck host headers
+                    if (response.ReasonPhrase == "Site Disabled")
+                    {
+                        throw new System.Exception("Site Disabled");            // 403, "site disabled", likely the Azure API is down/stopped
+                    }
+                    else
+                    {
+                        throw new System.Exception("KW HTTP EXCEPTION");            // if 400/ bad request, doublecheck host headers
+                    }
                 }
                  myjson = await response.Content.ReadAsStringAsync();
             }
@@ -34,8 +41,9 @@ namespace DBikesXamarin
             catch (Exception exception)
             {
                                             // catch expected errors, handle scenario on UI when json returns null
-                if (exception.Message == "Socket closed" 
-                    || exception.Message == "Canceled" || 
+                if (exception.Message == "Socket closed"
+                    || exception.Message == "Canceled"
+                    || exception.Message == "Site Disabled" ||
                     exception.Message.Contains("Unable to resolve host")
                     )
                 {
