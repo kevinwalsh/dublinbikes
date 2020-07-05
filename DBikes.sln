@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBikes.Api", "DBikes.Api\DBikes.Api.csproj", "{F03D4179-E38D-4624-9265-7621BF22644C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBikes.Api", "DBikes.Api\DBikes.Api.csproj", "{1345911F-2D98-43BB-9D20-3775D1C98635}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBikes.Web", "DBikes.Web\DBikes.Web.csproj", "{6113EA89-E030-40A4-B23A-52F10286CDD6}"
 EndProject
@@ -17,10 +17,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F03D4179-E38D-4624-9265-7621BF22644C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F03D4179-E38D-4624-9265-7621BF22644C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F03D4179-E38D-4624-9265-7621BF22644C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F03D4179-E38D-4624-9265-7621BF22644C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1345911F-2D98-43BB-9D20-3775D1C98635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1345911F-2D98-43BB-9D20-3775D1C98635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1345911F-2D98-43BB-9D20-3775D1C98635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1345911F-2D98-43BB-9D20-3775D1C98635}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6113EA89-E030-40A4-B23A-52F10286CDD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6113EA89-E030-40A4-B23A-52F10286CDD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6113EA89-E030-40A4-B23A-52F10286CDD6}.Release|Any CPU.ActiveCfg = Release|Any CPU

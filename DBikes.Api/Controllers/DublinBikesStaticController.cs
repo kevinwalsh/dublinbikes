@@ -1,17 +1,17 @@
-﻿using DBikes.Api.Filters;
+﻿//using DBikes.Api.Filters;
 using DBikes.Api.Helpers.HTTPClient;
 using DBikes.Api.Models;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
 
 namespace DBikes.Api.Controllers
 {
-    [SimpleAuthentication]
+    // [SimpleAuthentication]
     //    [Authorize]                 
-    [RoutePrefix("api/DublinBikesStatic")]
-    public class DublinBikesStaticController : ApiController
+    [Route("api/DublinBikesStatic")]
+    public class DublinBikesStaticController : Controller
     {
         [HttpGet]
         [Route("GetStationsByCity")]

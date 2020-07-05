@@ -1,5 +1,4 @@
-﻿using DBikes.Api.Filters;
-using DBikes.Api.Helpers.GPSHelper;
+﻿using DBikes.Api.Helpers.GPSHelper;
 using DBikes.Api.Helpers.HTTPClient;
 using DBikes.Api.Models.DBikesModels;
 using DBikes.Api.Providers;
@@ -7,23 +6,24 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Xml;
 using System.Xml.Serialization;
 
+
 namespace DBikes.Api.Controllers
 {
-    [SimpleAuthentication]
+//    [SimpleAuthentication]
     //[HMACAuthentication]            //https://bitoftech.net/2014/12/15/secure-asp-net-web-api-using-api-key-authentication-hmac-authentication/
-    [RoutePrefix("api/DublinBikes")]
-    public class DublinBikesController : ApiController
+    [Route("api/DublinBikes")]
+    public class DublinBikesController : Controller
     {
         private DBikesMemoryCache cache;
         private DublinBikesHTTPClientHelper dbhelper;
 
-        public DublinBikesController()
+        public DublinBikesController(DBikesMemoryCache memcache)
         {
-            cache = new DBikesMemoryCache();
+            cache = memcache;
             dbhelper = new DublinBikesHTTPClientHelper();
         }
 
