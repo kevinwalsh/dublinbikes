@@ -10,25 +10,37 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 
+import { TemplateComponent } from './dbikes/template/template.component';
+import { DashboardComponent } from './dbikes/Dashboard/dashboard.component';
+import { DBikesDashboardComponent } from './dbikes/dbikes/dbikes-dashboard.component';
+import { DBikesService } from './dbikes/dbikes/dbikes.service';
+
 @NgModule({
   declarations: [
     AppComponent,
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
-    FetchDataComponent
-  ],
+    FetchDataComponent,
+    DashboardComponent,
+    TemplateComponent,
+    DBikesDashboardComponent,
+   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: '', component: DashboardComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
-    ])
+      { path: 'dbikes/dashboard', component: DashboardComponent },
+      { path: 'dbikes/template', component: TemplateComponent }
+   ])
   ],
-  providers: [],
+  providers: [
+    DBikesService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

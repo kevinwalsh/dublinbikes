@@ -1,4 +1,4 @@
-﻿
+
 export class DBikesModel {
     public stationNum: number;
     public city: string;

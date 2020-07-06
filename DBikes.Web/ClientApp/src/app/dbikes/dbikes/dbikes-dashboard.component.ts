@@ -1,8 +1,8 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { DBikesService } from './dbikes.service';
 import { DBikesModel } from './dbikes.model';
-import { timer } from 'rxjs/observable/timer';
+import { timer } from 'rxjs';
 
 @Component({
     selector: 'app-dbikes-dashboard-component',

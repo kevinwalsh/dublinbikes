@@ -1,8 +1,7 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchMap';
+import { map, switchMap } from 'rxjs/operators';
 import { DBikesModel } from './dbikes.model';
 
 @Injectable()
