@@ -29,9 +29,9 @@ namespace DBikes.Api.Models.DBikesModels
         public Position position;
 
         [JsonProperty("available_bikes")]
-        public int available { get; set; }
+        public int bikes { get; set; }
         [JsonProperty("available_bike_stands")]
-        public int free { get; set; }
+        public int freeStands { get; set; }
         [JsonProperty("bike_stands")]
         public int total { get; set; }
         [JsonProperty("status")]
@@ -41,10 +41,7 @@ namespace DBikes.Api.Models.DBikesModels
         [JsonProperty("bonus")]
         public bool isBonus { get; set; }
         [JsonProperty("last_update")]
-        //  [JsonConverter(typeof(JsonDateConverter))]
-        //  [JsonConverter(typeof(JsonDateConverter2))]         //problems autoconverting unix millisec to datetime
-        //public DateTime updatedAt { get; set; }
-        long updatedAt { get; set; }
+        public long updatedAt { get; set; }
 
     }
 }

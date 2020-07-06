@@ -17,17 +17,18 @@ export class DBikesModel {
     bonus: boolean;
 
     constructor(x: any) {
-        this.stationNum = x.number;
-        this.city = x.contract_name;
-        this.stationName = x.name;
-        this.stationAddress = x.address;
+        this.stationNum = x.stationNumber;
+        this.city = x.contractName;
+        this.stationName = x.stationName;
+        this.stationAddress = x.stationName;
         this.status = x.status;
-        this.available_bike_stands = x.available_bike_stands;
-        this.available_bikes = x.available_bikes;
-        this.last_update = x.last_update;
+        this.available_bike_stands = x.freeStands;
+        this.available_bikes = x.bikes;
+        this.last_update = x.updatedAt;
 
-        this.banking = x.banking;
-        this.bonus = x.bonus;
+        this.banking = x.isBanking;
+        this.bonus = x.isBonus;
+
     }
 
 }

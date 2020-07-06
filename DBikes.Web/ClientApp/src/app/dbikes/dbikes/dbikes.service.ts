@@ -8,8 +8,8 @@ import { DBikesModel } from './dbikes.model';
 export class DBikesService {
 
  //   rawResults$: Observable<Array<any>>;
-    //baseurl = 'http://localhost:51754/api/DublinBikes';
-    baseurl = 'http://dublinbikesapi.azurewebsites.net/api/DublinBikes';
+    baseurl = 'https://localhost:44303/api/DublinBikes';
+    // baseurl = 'http://dublinbikesapi.azurewebsites.net/api/DublinBikes';
     
     /*  sample single
             https://api.jcdecaux.com/vls/v1/stations/{station_number}?contract={contract_name} 
