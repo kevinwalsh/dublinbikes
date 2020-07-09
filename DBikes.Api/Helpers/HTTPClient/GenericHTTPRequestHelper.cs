@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DBikes.Api.Helpers.LogicApp;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Web;
+using System.Text;
 using System.Xml;
 
 namespace DBikes.Api.Helpers.HTTPClient
@@ -31,6 +29,9 @@ namespace DBikes.Api.Helpers.HTTPClient
             }
             catch (System.Net.WebException error) {
                 var resp = (HttpWebResponse) error.Response;
+                LogicAppHelper.SendErrorToStorageAccount("HTTP Response WebException",
+                        error.ToString(), "GenericHttpRequestHelper.SendHttpRequest()");
+
                 if (resp.StatusCode !=null && ((int)resp.StatusCode == 403 || (int)resp.StatusCode == 404))
                 {
                     // want to throw 403/404 as error is from either client/3rdparty, not internal(500).
@@ -58,5 +59,6 @@ namespace DBikes.Api.Helpers.HTTPClient
             }
             return responseXML ;
         }
+
     }
 }

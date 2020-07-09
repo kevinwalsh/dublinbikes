@@ -3,6 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 import { DBikesService } from './dbikes.service';
 import { DBikesModel } from './dbikes.model';
 import { timer } from 'rxjs';
+import { LogicAppService } from '../../helpers/logicappservice/logicapp.service';
 
 @Component({
     selector: 'app-dbikes-dashboard-component',
@@ -25,7 +26,8 @@ export class DBikesDashboardComponent implements OnInit {
     public timerSub$: Subscription;
 
     constructor(
-        private bikeService: DBikesService
+      private bikeService: DBikesService,
+      private logicAppService: LogicAppService
     ) { }
 
     ngOnInit() {
@@ -85,6 +87,11 @@ export class DBikesDashboardComponent implements OnInit {
         );
     }
 
+  SendErrorMessageToLogicApp() {
+    this.logicAppService.SendErrorToStorageAccount("angular", "errortest", "logicappService").toPromise().then(x => {
+      console.log("LOGICAPP :    " + x);
+    })
+  }
 
     SearchSingleStation() {
         this.loading = true;
