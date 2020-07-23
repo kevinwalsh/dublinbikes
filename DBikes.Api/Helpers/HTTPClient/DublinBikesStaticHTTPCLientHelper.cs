@@ -1,8 +1,4 @@
-﻿using DBikes.Api.Helpers.APIKey;
-using Newtonsoft.Json;
-using System.IO;
-using System.Net;
-using System.Xml;
+﻿using System.Threading.Tasks;
 
 namespace DBikes.Api.Helpers.HTTPClient
 {
@@ -10,9 +6,9 @@ namespace DBikes.Api.Helpers.HTTPClient
     {
         string url = "https://developer.jcdecaux.com/rest/vls/stations/";
 
-        public string GetCityInfo(string city)
+        public async Task<string> GetCityInfo(string city)
         {
-            var o = GenericHTTPRequestHelper.SendHttpRequest(url + city+".json");
+            var o = await GenericHTTPRequestHelper.SendHttpRequest(url + city+".json");
             return o;
         }
     }

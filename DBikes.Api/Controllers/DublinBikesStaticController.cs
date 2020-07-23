@@ -1,10 +1,12 @@
 ﻿//using DBikes.Api.Filters;
 using DBikes.Api.Helpers.HTTPClient;
 using DBikes.Api.Models;
+using DBikes.Api.Models.DBikesModels;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DBikes.Api.Controllers
 {
@@ -12,43 +14,53 @@ namespace DBikes.Api.Controllers
     //    [Authorize]                 
     [Route("api/DublinBikesStatic")]
     public class DublinBikesStaticController : Controller
+
+        /*
+         TODO constructor like in other controller; memcache etc
+         */
     {
         [HttpGet]
         [Route("GetStationsByCity")]
-        public object GetStationByCity(string city)
+        public async Task<IActionResult> GetStationByCity(string city)
         {
             DublinBikesStaticHTTPClientHelper dbSHelper = new DublinBikesStaticHTTPClientHelper();
-            var result = dbSHelper.GetCityInfo(city);
-            return JsonConvert.DeserializeObject(result);
+            var result = await dbSHelper.GetCityInfo(city);       // TODO FIX: 3rdparty crashes/ returns 500 if fake city requested
+            if (result == null)
+            {
+                return BadRequest();
+            }
+            return Ok(JsonConvert.DeserializeObject<List<BikeStation>>(result));
+                                        // casting as BikeStation for now, though data contains no availability info/etc
         }
 
         [HttpGet]
         [Route("GetCities")]
         //public List<CityEnum> GetCities()
-        public List<string> GetCitites()
+        public async Task<IActionResult> GetCitites()
         {
             // var enumvals = System.Enum.GetValues(typeof(CityEnum)).Cast<CityEnum>().ToList(); //gives NUMs not names
             var types = System.Enum.GetNames(typeof(CityEnum)).ToList();
-            return types;
+            return Ok(types);
         }
 
         [HttpGet]
         [Route("SelectCity")]
-        public CityEnum SelectCity(CityEnum city)
+        public async Task<IActionResult> SelectCity(CityEnum city)
         {
-            return city;      // inputs as string val (due to SwaggerConfig option); returns as corresponding number
+            return Ok(city);      // inputs as string val (due to SwaggerConfig option); returns as corresponding number
         }
 
         [HttpGet]
         [Route("SearchCity")]
-        public CityEnum SelectCity(string s)
+        public async Task<IActionResult> SelectCity(string s)    // not very useful FN; (a) shouldnt return an exception; (b) currently only returns FULL matches
         {
             CityEnum c;
             if(!System.Enum.TryParse(s, true, out c))
             {
                 throw new System.Exception("CityEnumException: no matching city found");
+                return BadRequest();
             }
-            return c;
+            return Ok(c);
          }
 
     }

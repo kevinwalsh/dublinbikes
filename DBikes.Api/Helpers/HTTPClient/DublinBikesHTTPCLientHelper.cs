@@ -1,7 +1,5 @@
 ﻿using DBikes.Api.Helpers.APIKey;
-using Newtonsoft.Json;
-using System.IO;
-using System.Net;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace DBikes.Api.Helpers.HTTPClient
@@ -47,24 +45,24 @@ namespace DBikes.Api.Helpers.HTTPClient
             return fullUrl;
         }
 
-        public string GetStation(int stationid)
+        public async Task<string> GetStation(int stationid)
         {
             var url = BuildUrlParams(stationid);
-            var responseString = GenericHTTPRequestHelper.SendHttpRequest(url);
+            var responseString = await GenericHTTPRequestHelper.SendHttpRequest(url);
             return responseString;
         }
 
-        public string GetAllStations()
+        public async Task<string> GetAllStations()
         {
             var url = BuildUrlParams();
-            var responseString = GenericHTTPRequestHelper.SendHttpRequest(url);
+            var responseString = await GenericHTTPRequestHelper.SendHttpRequest(url);
             return responseString;
         }
 
-        public string GetStation_NoAPIRequired(int stationId)
+        public async Task<string> GetStation_NoAPIRequired(int stationId)
         {
             var url = "http://www.dublinbikes.ie/service/stationdetails/dublin/" + stationId;
-            var responseString = GenericHTTPRequestHelper.SendHttpRequest(url);
+            var responseString = await GenericHTTPRequestHelper.SendHttpRequest(url);
             return responseString;
         }
 

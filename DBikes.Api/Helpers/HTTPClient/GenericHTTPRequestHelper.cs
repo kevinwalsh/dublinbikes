@@ -1,15 +1,14 @@
 ﻿using DBikes.Api.Helpers.LogicApp;
-using System;
 using System.IO;
 using System.Net;
-using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace DBikes.Api.Helpers.HTTPClient
 {
     public static class GenericHTTPRequestHelper
     {
-        public static string SendHttpRequest(string fullurl)
+        public async static Task<string> SendHttpRequest(string fullurl)
         {
             HttpWebRequest DBikesApiRequest = WebRequest.Create(
                    fullurl

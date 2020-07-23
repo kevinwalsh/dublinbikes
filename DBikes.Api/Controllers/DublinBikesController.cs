@@ -9,6 +9,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Threading.Tasks;
 
 
 namespace DBikes.Api.Controllers
@@ -43,7 +44,7 @@ namespace DBikes.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetStation/{id}")]
-        public object GetStationById(int id=11)
+        public async Task<IActionResult> GetStationById(int id=11)
         {
              List<BikeStation> stations = (List<BikeStation>) cache.CheckCache("dublin");
             BikeStation station = null;
@@ -53,11 +54,11 @@ namespace DBikes.Api.Controllers
             }
             else
             {
-                string result = dbhelper.GetStation(id);
+                string result = await dbhelper.GetStation(id);
                 station = JsonConvert.DeserializeObject<BikeStation>(result);
             }
             List<BikeStation> stationAsList = new List<BikeStation>() { station };
-            return stationAsList;
+            return Ok(stationAsList);
         }
 
         /// <summary>
@@ -67,60 +68,60 @@ namespace DBikes.Api.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetStationExactModel/{id}")]
-        public object GetStationExactModel(int id=11)
+        public async Task<IActionResult> GetStationExactModel(int id=11)
         {
-            string result = dbhelper.GetStation(id);
+            string result = await dbhelper.GetStation(id);
             BikeStationExact bse = JsonConvert.DeserializeObject<BikeStationExact>(result);
-            return bse;
+            return Ok(bse);
         }
 
         [HttpGet]
         [Route("GetAllStations")]
-        public object GetAllStations()
+        public async Task<IActionResult> GetAllStations()
         {
             List<BikeStation> stations = (List<BikeStation>) cache.CheckCache("dublin");
             if (stations == null)
             {
-                string result = dbhelper.GetAllStations();
+                string result = await dbhelper.GetAllStations();
                 stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
                 cache.AddToCache("dublin", stations);
             }
             
             //            return stations;
-            return stations.OrderBy(x=>x.stationNumber);
+            return Ok(stations.OrderBy(x=>x.stationNumber));
         }
 
         [HttpGet]
         [Route("GetStationsWithinMetres/{id}/{metres}")]
-        public object GetStationsWithinMetres(int id, int metres)
+        public async Task<IActionResult> GetStationsWithinMetres(int id, int metres)
         {
             List<BikeStation> stations = (List<BikeStation>)cache.CheckCache("dublin");
             if (stations == null)
             {
-                string result = dbhelper.GetAllStations();
+                string result = await dbhelper.GetAllStations();
                 stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
                 cache.AddToCache("dublin", stations);
             }
 
             var mystation = stations.SingleOrDefault(x => x.stationNumber == id);
             var nearbyStations = GPSHelper.FindNearbyStations(stations, mystation, metres);
-            return nearbyStations;
+            return Ok(nearbyStations);
         }
 
         [HttpGet]
         [Route("GetStation_NoAPIKey")]
-        public object GetStation_XML_NoAPIKey(int stationId)         // N.B. returns XML, not JSON here
+        public async Task<IActionResult> GetStation_XML_NoAPIKey(int stationId)         // N.B. returns XML, not JSON here
         {
-            var result = dbhelper.GetStation_NoAPIRequired(stationId);
+            var result = await dbhelper.GetStation_NoAPIRequired(stationId);
             var xmlSerializer = new XmlSerializer(typeof(BikeStationBasic));
             var stringreader = new StringReader(result);
             var xmlstation = (BikeStationBasic)xmlSerializer.Deserialize(stringreader);
-            return xmlstation;
+            return Ok(xmlstation);
         }
 
         [HttpGet]
         [Route("XMLTest_GenerateSampleStation")]
-        public object xmlTest_generateSampleStation()
+        public async Task<IActionResult> xmlTest_generateSampleStation()
         {
                     // making random bikestation model and returning it.
                     // some serialization problems; source API returns UTF-8 xml but this autogenerates UTF-16
@@ -143,7 +144,7 @@ namespace DBikes.Api.Controllers
                     xml = sww.ToString();
                 }
             }
-            return xml;
+            return Ok(xml);
         }
 
     }
