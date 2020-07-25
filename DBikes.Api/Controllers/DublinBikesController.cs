@@ -10,11 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Threading.Tasks;
-
+using DBikes.Api.Filters;
 
 namespace DBikes.Api.Controllers
 {
-//    [SimpleAuthentication]
+    [SimpleAuthentication]
     //[HMACAuthentication]            //https://bitoftech.net/2014/12/15/secure-asp-net-web-api-using-api-key-authentication-hmac-authentication/
     [Route("api/DublinBikes")]
     public class DublinBikesController : Controller

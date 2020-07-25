@@ -1,34 +1,31 @@
-﻿using System;
-using System.Net.Http.Headers;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.Http.Filters;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Primitives;
+using System;
 
 namespace DBikes.Api.Filters
 {
-    public class SimpleAuthenticationAttribute : Attribute, IAuthenticationFilter
+    public class SimpleAuthenticationAttribute : ActionFilterAttribute, IActionFilter
     {
-      public bool AllowMultiple {
-            get{return false;}
-        }
 
-        public Task AuthenticateAsync(HttpAuthenticationContext context, CancellationToken cancellationToken)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
             var c = GenerateAuthenticationToken();
-            var bearerAuth = context.Request.Headers.Authorization;
-            if (bearerAuth == null || bearerAuth.Scheme != "Bearer" || bearerAuth.Parameter != c)
+            StringValues bearerAuth;
+            context.HttpContext.Request.Headers.TryGetValue("Authorization", out bearerAuth);
+
+            if (bearerAuth.ToString() == null || bearerAuth != "Bearer " + c)
+
             {
-                context.ErrorResult = new System.Web.Http.Results.UnauthorizedResult(
-                    new AuthenticationHeaderValue[0],
-                    context.Request
-                    );
+                context.HttpContext.Response.StatusCode = 403;          // doesnt cancel controller action 
+                context.Result = new ContentResult { Content = "403" };             // cancels controller action
             }
-            return Task.FromResult(0);
+
         }
 
-        public Task ChallengeAsync(HttpAuthenticationChallengeContext context, CancellationToken cancellationToken)
+        public override void OnActionExecuted(ActionExecutedContext context)
         {
-            return Task.FromResult(0);
+            //throw new NotImplementedException();
         }
 
         /*      Verify/compute Authentication token 
