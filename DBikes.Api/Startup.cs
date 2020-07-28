@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SKELETONPROJECT.CoreApi.SettingsOptions;
+using DBikes.CoreApi.SettingsOptions;
 
-namespace SKELETONPROJECT.CoreApi
+namespace DBikes.CoreApi
 {
     public class Startup
     {
@@ -20,13 +20,14 @@ namespace SKELETONPROJECT.CoreApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var dbikesSettings = new MySettingsOptions();
+            Configuration.GetSection(StaticData.DBikesSettings).Bind(dbikesSettings);
             services.AddCors(options =>
             {
                 options.AddPolicy("DBikesPolicy", builder =>
                 {
                     builder
-                        //.AllowAnyOrigin()
-                        .WithOrigins("https://localhost:44311")
+                       .WithOrigins(dbikesSettings.AllowedUrls)
                         .WithHeaders("Authorization")
                     ;
                 });
@@ -35,7 +36,10 @@ namespace SKELETONPROJECT.CoreApi
             services.AddControllersWithViews();
             //KW 
             services.AddSwaggerGen();
-            services.AddSingleton<DBikesMemoryCache>();
+            services.AddSingleton(new DBikesMemoryCache(dbikesSettings.DefaultCacheLifetime));
+            services.AddSingleton(dbikesSettings);
+            services.AddSingleton(new DBikes.Api.Helpers.HTTPClient.DublinBikesHTTPClientHelper(dbikesSettings.DefaultCity));
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -70,9 +74,8 @@ namespace SKELETONPROJECT.CoreApi
             });
 
             //KW
-            var swagger_openapiversion = Configuration.GetValue<int>("mysettings:SwaggerOpenApiVersion");      // appsettings, Option 1
             var mysettings = new MySettingsOptions();                           // appsettings, Option 2
-            Configuration.GetSection(StaticData.MySettings).Bind(mysettings);
+            Configuration.GetSection(StaticData.DBikesSettings).Bind(mysettings);
             app.UseSwagger();
 
             if (mysettings.SwaggerOpenApiVersion == 2)              // e.g configuring startup settings based on appsettings

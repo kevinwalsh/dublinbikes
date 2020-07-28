@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SKELETONPROJECT.CoreApi
+namespace DBikes.CoreApi
 {
     public class StaticData
     {
         // Sections in appsettings.json
 
-        public const string MySettings = "mysettings";
+        public const string DBikesSettings = "DBikesSettings";
     }
 }

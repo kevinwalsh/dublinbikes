@@ -23,7 +23,14 @@ namespace DBikes.Api.Helpers.HTTPClient
          IApiKeyHelper akhelper = new ApiKeyHelper();
 
         string baseurl = "https://api.jcdecaux.com/vls/v1/stations";
-        string locationparam = "&contract=dublin";
+        string locationparam = "";
+
+        public DublinBikesHTTPClientHelper(
+            string defaultCity
+            )
+        {
+            this.locationparam = "&contract="+defaultCity;
+        }
 
         private string BuildUrlParams( int? stationid = null)
         {

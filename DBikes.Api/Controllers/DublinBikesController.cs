@@ -11,6 +11,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.Threading.Tasks;
 using DBikes.Api.Filters;
+using DBikes.CoreApi.SettingsOptions;
 
 namespace DBikes.Api.Controllers
 {
@@ -20,12 +21,17 @@ namespace DBikes.Api.Controllers
     public class DublinBikesController : Controller
     {
         private DBikesMemoryCache cache;
+        private MySettingsOptions mySettingsOptions;
         private DublinBikesHTTPClientHelper dbhelper;
 
-        public DublinBikesController(DBikesMemoryCache memcache)
+        public DublinBikesController(DBikesMemoryCache memcache, 
+            MySettingsOptions mySettings,
+            DublinBikesHTTPClientHelper dbikesHTTP
+            )
         {
             cache = memcache;
-            dbhelper = new DublinBikesHTTPClientHelper();
+            mySettingsOptions = mySettings;
+            dbhelper = dbikesHTTP;
         }
 
         /*        [HttpPost]
@@ -46,7 +52,7 @@ namespace DBikes.Api.Controllers
         [Route("GetStation/{id}")]
         public async Task<IActionResult> GetStationById(int id=11)
         {
-             List<BikeStation> stations = (List<BikeStation>) cache.CheckCache("dublin");
+             List<BikeStation> stations = (List<BikeStation>) cache.CheckCache(mySettingsOptions.DefaultCity);
             BikeStation station = null;
             if (stations != null)
             {
@@ -79,12 +85,12 @@ namespace DBikes.Api.Controllers
         [Route("GetAllStations")]
         public async Task<IActionResult> GetAllStations()
         {
-            List<BikeStation> stations = (List<BikeStation>) cache.CheckCache("dublin");
+            List<BikeStation> stations = (List<BikeStation>) cache.CheckCache(mySettingsOptions.DefaultCity);
             if (stations == null)
             {
                 string result = await dbhelper.GetAllStations();
                 stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
-                cache.AddToCache("dublin", stations);
+                cache.AddToCache(mySettingsOptions.DefaultCity, stations);
             }
             
             //            return stations;
@@ -93,15 +99,16 @@ namespace DBikes.Api.Controllers
 
         [HttpGet]
         [Route("GetStationsWithinMetres/{id}/{metres}")]
-        public async Task<IActionResult> GetStationsWithinMetres(int id, int metres)
+        public async Task<IActionResult> GetStationsWithinMetres(int id, int metres = 0)
         {
-            List<BikeStation> stations = (List<BikeStation>)cache.CheckCache("dublin");
+            List<BikeStation> stations = (List<BikeStation>)cache.CheckCache(mySettingsOptions.DefaultCity);
             if (stations == null)
             {
                 string result = await dbhelper.GetAllStations();
                 stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
-                cache.AddToCache("dublin", stations);
+                cache.AddToCache(mySettingsOptions.DefaultCity, stations);
             }
+            metres = metres > 0 ? metres : mySettingsOptions.DefaultSearchRadius; 
 
             var mystation = stations.SingleOrDefault(x => x.stationNumber == id);
             var nearbyStations = GPSHelper.FindNearbyStations(stations, mystation, metres);

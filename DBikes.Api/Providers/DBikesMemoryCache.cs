@@ -5,9 +5,11 @@ namespace DBikes.Api.Providers
     public class DBikesMemoryCache
     {
         private MemoryCache cache { get; set; }
+        private int cacheLifetime;
 
-        public DBikesMemoryCache()
+        public DBikesMemoryCache(int defaultLifetime)
         {
+            cacheLifetime = defaultLifetime;
             MemoryCacheOptions memCacheOptions = new MemoryCacheOptions();
             cache = new MemoryCache(memCacheOptions);
         }
@@ -15,7 +17,7 @@ namespace DBikes.Api.Providers
         public void AddToCache(string key, Object o)
         {
             MemoryCacheEntryOptions itemOptions = new MemoryCacheEntryOptions();
-            itemOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(30);
+            itemOptions.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(cacheLifetime);
             cache.Set(key, o,itemOptions);
         }
 
