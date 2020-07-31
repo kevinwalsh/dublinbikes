@@ -1,3 +1,4 @@
+using DBikes.Web.SettingsOptions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,6 +27,11 @@ namespace DBikes.Web
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            // KW custom settings
+            var dbikesSettings = new MySettingsOptions();
+            Configuration.GetSection(StaticData.DBikesSettings).Bind(dbikesSettings);
+            services.AddSingleton(dbikesSettings);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

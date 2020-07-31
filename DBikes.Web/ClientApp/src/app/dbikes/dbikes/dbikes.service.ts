@@ -3,21 +3,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { DBikesModel } from './dbikes.model';
+import { AppSettingsService } from '../../helpers/app-settings/app-settings.service';
 
 @Injectable()
 export class DBikesService {
-
- //   rawResults$: Observable<Array<any>>;
-    baseurl = 'https://localhost:44303/api/DublinBikes';
-    // baseurl = 'http://dublinbikesapi.azurewebsites.net/api/DublinBikes';
+    baseurl;
     
-    /*  sample single
-            https://api.jcdecaux.com/vls/v1/stations/{station_number}?contract={contract_name} 
-        sample all in area
-            https://api.jcdecaux.com/vls/v1/stations?contract={contract_name}&apiKey={api_key}
-    */
-
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient,
+      private readonly appSettingsService: AppSettingsService
+    ) {
+      this.appSettingsService.$appSettingsObs.toPromise().then(x => {
+        this.baseurl = x.apiUrl + '/api/DublinBikes';
+      });
+    }
 
     private GenerateAuthToken(): string {
         let key = "dublinbikestoken"; 

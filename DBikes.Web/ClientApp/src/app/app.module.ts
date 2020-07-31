@@ -15,6 +15,7 @@ import { DashboardComponent } from './dbikes/Dashboard/dashboard.component';
 import { DBikesDashboardComponent } from './dbikes/dbikes/dbikes-dashboard.component';
 import { DBikesService } from './dbikes/dbikes/dbikes.service';
 import { LogicAppService } from './helpers/logicappservice/logicapp.service';
+import { AppSettingsService } from './helpers/app-settings/app-settings.service';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { LogicAppService } from './helpers/logicappservice/logicapp.service';
   ],
   providers: [
     DBikesService,
-    LogicAppService
+    LogicAppService,
+    AppSettingsService
   ],
   bootstrap: [AppComponent]
 })
