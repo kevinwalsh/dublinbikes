@@ -1,4 +1,4 @@
-﻿
+
 .title {
 }
 
@@ -10,4 +10,8 @@
 .warning {
     color: red;
     font-weight: bold
+}
+
+.bluebackground{
+    background:aqua;
 }

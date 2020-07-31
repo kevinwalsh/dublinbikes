@@ -3,11 +3,18 @@
 </div>
 
 <div class="col-xs-12 controls">
-    <div class="col-xs-2 spinner">
+    <div class="col-xs-3 map">
+      <a href="http://www.dublinbikes.ie/All-Stations/Station-map">
+        <img src="assets/dbikes_map.PNG" width="150" />
+        <h4>Open via maps</h4>
+      </a>
+    </div>
+   <div class="col-xs-1 spinner">
         <img *ngIf="loading" src="assets/loading.gif" width="50" />
     </div>
 
-    <div class="col-xs-10 bikequery">
+
+    <div class="col-xs-8 bikequery">
         <div class="col-xs-12">
             <label>Enter Station #:</label>
             <input id="SelectedStationInput" type="number" [(ngModel)]="selectedStation" />
@@ -16,8 +23,6 @@
         <div class="col-xs-12">
             <label>OR search all stations</label>
             <button id="SearchAllBtn" (click)="SearchAllStations()">Search All Stations</button>
-            <button id="ToggleLiveUpdateBtn" (click)="ToggleLiveUpdate()">{{liveUpdateBoolean ? 'Disable': 'Enable'}} LiveUpdate</button>
-            <button id="logicapp" (click)="SendErrorMessageToLogicApp()">LogicAppFunctionTest</button>
        </div>
     </div>
 </div>
@@ -28,7 +33,12 @@
 <!--    Results Header      -->
 <div id="results" class="results" *ngIf="results !=null">
     <h3>Results: ({{results.length}} found)</h3>
-    <p><em>(Last Updated: {{ lastupdate | date:'HH:mm:ss' }})</em></p>
+  <p>Live update: {{liveUpdateBoolean ? 'ENABLED' : 'DISABLED'}}
+    <button id="ToggleLiveUpdateBtn" (click)="ToggleLiveUpdate()" [class.bluebackground]="liveUpdateBoolean==false">
+      {{liveUpdateBoolean ? 'Disable': 'Enable'}}
+    </button>
+  </p>
+  <p><em>(Last Updated: {{ lastupdate | date:'HH:mm:ss' }})</em></p>
     <div class="col-xs-12">
         <div class="col-xs-1">
             Nearby
