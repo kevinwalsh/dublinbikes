@@ -10,7 +10,7 @@ namespace DBikes.CoreApi.SettingsOptions
         public int SwaggerOpenApiVersion { get; set; }
         public string MyApiVersion { get; set; }
         public string Env { get; set; }
-        public string AllowedUrls { get; set; }
+        public string[] AllowedUrls { get; set; }
         public string DefaultCity { get; set; }
         public int DefaultSearchRadius { get; set; }
         public int DefaultCacheLifetime { get; set; }
