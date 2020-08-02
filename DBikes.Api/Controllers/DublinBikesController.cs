@@ -12,6 +12,7 @@ using System.Xml.Serialization;
 using System.Threading.Tasks;
 using DBikes.Api.Filters;
 using DBikes.CoreApi.SettingsOptions;
+using DBikes.Api.Models;
 
 namespace DBikes.Api.Controllers
 {
@@ -49,10 +50,10 @@ namespace DBikes.Api.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetStation/{id}")]
-        public async Task<IActionResult> GetStationById(int id=11)
+        [Route("GetStation/{city}/{id}")]
+        public async Task<IActionResult> GetStationById(CityEnum city, int id=11)
         {
-             List<BikeStation> stations = (List<BikeStation>) cache.CheckCache(mySettingsOptions.DefaultCity);
+             List<BikeStation> stations = (List<BikeStation>) cache.CheckCache(city.ToString());
             BikeStation station = null;
             if (stations != null)
             {
@@ -60,7 +61,7 @@ namespace DBikes.Api.Controllers
             }
             else
             {
-                string result = await dbhelper.GetStation(id);
+                string result = await dbhelper.GetStation(city.ToString(), id);
                 station = JsonConvert.DeserializeObject<BikeStation>(result);
             }
             List<BikeStation> stationAsList = new List<BikeStation>() { station };
@@ -76,7 +77,7 @@ namespace DBikes.Api.Controllers
         [Route("GetStationExactModel/{id}")]
         public async Task<IActionResult> GetStationExactModel(int id=11)
         {
-            string result = await dbhelper.GetStation(id);
+            string result = await dbhelper.GetStation(mySettingsOptions.DefaultCity, id);
             BikeStationExact bse = JsonConvert.DeserializeObject<BikeStationExact>(result);
             return Ok(bse);
         }
@@ -98,15 +99,55 @@ namespace DBikes.Api.Controllers
         }
 
         [HttpGet]
-        [Route("GetStationsWithinMetres/{id}/{metres}")]
-        public async Task<IActionResult> GetStationsWithinMetres(int id, int metres = 0)
+        [Route("GetAllStations/{city}")]
+        public async Task<IActionResult> GetAllStations(Models.CityEnum city, string sortby, bool reverseOrder)
+        {
+            List<BikeStation> stations = (List<BikeStation>)cache.CheckCache(city.ToString());
+            if (stations == null)
+            {
+                string result = await dbhelper.GetAllStations(city.ToString());
+                stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
+                cache.AddToCache(city.ToString(), stations);
+            }
+            //ordering
+            switch (sortby)
+            {       // ['stationid', 'stationname', 'bikes', 'spaces', 'updated','latlong'];
+                case "stationname":
+                    stations = stations.OrderBy(x => x.stationName).ToList();
+                    break;
+                case "bikes":
+                    stations = stations.OrderBy(x => x.bikes).ToList();
+                    break;
+                case "spaces":
+                    stations = stations.OrderBy(x => x.freeStands).ToList();
+                    break;
+                case "updated":
+                    stations = stations.OrderByDescending(x => x.updatedAt).ToList();       //reverse lat (north hemisphere)
+                    break;
+                case "latlong":
+                    stations = stations.OrderByDescending(x => x.position.lat).ThenBy(x=>x.position.lng).ToList();  // N-S
+                    break;
+                case "stationid":
+                default:
+                    stations = stations.OrderBy(x => x.stationNumber).ToList();
+                    break;
+            }
+            if(reverseOrder) { stations.Reverse(); }
+
+            //            return stations;
+            return Ok(stations);
+        }
+
+        [HttpGet]
+        [Route("GetStationsWithinMetres/{city}/{id}/{metres}")]
+        public async Task<IActionResult> GetStationsWithinMetres(CityEnum city, int id, int metres = 0)
         {
             List<BikeStation> stations = (List<BikeStation>)cache.CheckCache(mySettingsOptions.DefaultCity);
             if (stations == null)
             {
-                string result = await dbhelper.GetAllStations();
+                string result = await dbhelper.GetAllStations(city.ToString());
                 stations = JsonConvert.DeserializeObject<List<BikeStation>>(result).ToList();
-                cache.AddToCache(mySettingsOptions.DefaultCity, stations);
+                cache.AddToCache(city.ToString(), stations);
             }
             metres = metres > 0 ? metres : mySettingsOptions.DefaultSearchRadius; 
 

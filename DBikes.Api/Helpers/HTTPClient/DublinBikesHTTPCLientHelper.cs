@@ -23,16 +23,17 @@ namespace DBikes.Api.Helpers.HTTPClient
          IApiKeyHelper akhelper = new ApiKeyHelper();
 
         string baseurl = "https://api.jcdecaux.com/vls/v1/stations";
-        string locationparam = "";
+        string defaultcity = "";
 
         public DublinBikesHTTPClientHelper(
             string defaultCity
             )
         {
-            this.locationparam = "&contract="+defaultCity;
+            this.defaultcity= defaultCity;
         }
 
-        private string BuildUrlParams( int? stationid = null)
+        // TODO: change BuildUrlParams to a builder pattern
+        private string BuildUrlParams(string city, int? stationid = null)
         {
         /*  sample single:  https://api.jcdecaux.com/vls/v1/stations/{station_number}?contract={contract_name} 
             sample all in area  https://api.jcdecaux.com/vls/v1/stations?contract={contract_name}&apiKey={api_key}
@@ -43,25 +44,31 @@ namespace DBikes.Api.Helpers.HTTPClient
             var fullUrl = "";
             if (stationid!= null)
             {
-                fullUrl += baseurl + "/" + stationid + "?apiKey=" + key + locationparam;
+                fullUrl += baseurl + "/" + stationid + "?apiKey=" + key + "&contract=" + city;
             }
             else
             {
-                fullUrl += baseurl + "?apiKey=" + key + locationparam;
+                fullUrl += baseurl + "?apiKey=" + key + "&contract=" + city;
             }
             return fullUrl;
         }
 
-        public async Task<string> GetStation(int stationid)
+        public async Task<string> GetStation(string city, int stationid)
         {
-            var url = BuildUrlParams(stationid);
+            var url = BuildUrlParams(city, stationid);
             var responseString = await GenericHTTPRequestHelper.SendHttpRequest(url);
             return responseString;
         }
 
         public async Task<string> GetAllStations()
         {
-            var url = BuildUrlParams();
+            var url = BuildUrlParams(defaultcity);
+            var responseString = await GenericHTTPRequestHelper.SendHttpRequest(url);
+            return responseString;
+        }
+        public async Task<string> GetAllStations(string city)
+        {
+            var url = BuildUrlParams(city);
             var responseString = await GenericHTTPRequestHelper.SendHttpRequest(url);
             return responseString;
         }

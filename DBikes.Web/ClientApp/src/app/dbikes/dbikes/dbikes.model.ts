@@ -32,3 +32,9 @@ export class DBikesModel {
     }
 
 }
+
+export enum CityEnum {
+    amiens, besancon, brisbane, bruxelles, cergy, creteil, dublin, lillestrom,
+    ljubljana, lund, luxembourg, lyon, marseille, mulhouse, namur, nancy, nantes, rouen,
+    santander, seville, stockholm, toulouse, toyama, valence, vilnius
+}

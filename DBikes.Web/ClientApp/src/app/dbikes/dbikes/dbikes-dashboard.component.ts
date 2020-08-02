@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { DBikesService } from './dbikes.service';
-import { DBikesModel } from './dbikes.model';
+import { DBikesModel, CityEnum } from './dbikes.model';
 import { timer } from 'rxjs';
 import { LogicAppService } from '../../helpers/logicappservice/logicapp.service';
 
@@ -14,6 +14,12 @@ export class DBikesDashboardComponent implements OnInit {
     loading: boolean = true;
     polltime: number = 15000;
     pagetimeouttime: number = 1000 * 60 * 30;       // 30mins is generous
+    city = 'dublin';
+    cities = Object.values(CityEnum).filter(k => isNaN(Number(k)));
+                      // strange issue where enums list duplicated as both keys and corresponding vals, unless filtered
+    sortby = 'stationid';
+    reversesortBoolean = false;
+    sortoptions = ['stationid', 'stationname', 'bikes', 'spaces', 'updated','latlong'];
     results: DBikesModel[];
     lowBikeLimit: number = 3;
     selectedStation: number = 2;
@@ -32,7 +38,7 @@ export class DBikesDashboardComponent implements OnInit {
 
     ngOnInit() {
         this.timerObs$ = timer(0, this.polltime);
-        this.DBikesObs$ = this.bikeService.SearchAll();
+        this.DBikesObs$ = this.bikeService.SearchAll(this.city.toString(),this.sortby, this.reversesortBoolean);
         this.timerSub$ = this.timerObs$.subscribe(t => {
             if (this.liveUpdateBoolean) {
                 this.DBikesSubscription$ = this.DBikesObs$.subscribe(x => {
@@ -78,7 +84,7 @@ export class DBikesDashboardComponent implements OnInit {
 
     SearchAllStations() {
         this.loading = true;
-        this.DBikesObs$ = this.bikeService.SearchAll();
+        this.DBikesObs$ = this.bikeService.SearchAll(this.city.toString(),this.sortby, this.reversesortBoolean);
 
         this.DBikesObs$.toPromise().then(x => {     // fire once on click, while waiting for timerObs$
                 this.ParseResults(x);
@@ -95,7 +101,7 @@ export class DBikesDashboardComponent implements OnInit {
 
     SearchSingleStation() {
         this.loading = true;
-        this.DBikesObs$ = this.bikeService.SearchSingle(this.selectedStation);
+        this.DBikesObs$ = this.bikeService.SearchSingle(this.selectedStation,this.city.toString());
 
         this.DBikesObs$.toPromise().then(x => {    // fire once on click, while waiting for timerObs$
             this.ParseResults(x);
@@ -107,7 +113,7 @@ export class DBikesDashboardComponent implements OnInit {
 
     ShowNearbyStations(stationNum: number) {
         this.loading = true;
-        this.DBikesObs$ = this.bikeService.SearchNearby(stationNum);
+        this.DBikesObs$ = this.bikeService.SearchNearby(stationNum, this.city.toString());
 
         this.DBikesObs$.toPromise().then(x => {    // fire once on click, while waiting for timerObs$
             this.ParseResults(x);

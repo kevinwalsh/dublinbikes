@@ -24,6 +24,23 @@
             <label>OR search all stations</label>
             <button id="SearchAllBtn" (click)="SearchAllStations()">Search All Stations</button>
        </div>
+      <br /><br />
+      <div class="col-xs-12">
+          <label>City:</label>
+          <select name="city" [(ngModel)]="city">
+              <option *ngFor="let option of cities" value={{option}}>{{option}}</option>
+          </select>
+      </div>
+      <div class="col-xs-6">
+          <label>Sort By:</label>
+          <select name="sortby" [(ngModel)]="sortby">
+              <option *ngFor="let option of sortoptions" value={{option}}>{{option}}</option>
+          </select>
+      </div>
+      <div class="col-xs-6">
+        <label>Reverse ordering : </label>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" name="reversesort" [(ngModel)]="reversesortBoolean" />
+      </div>
     </div>
 </div>
 <br />
@@ -39,24 +56,24 @@
     </button>
   </p>
   <p><em>(Last Updated: {{ lastupdate | date:'HH:mm:ss' }})</em></p>
-    <div class="col-xs-12">
+    <div class="col-xs-12" style="padding:5px">
         <div class="col-xs-1">
-            Nearby
+            <b><u>Nearby</u></b>
         </div>
         <div class="col-xs-2">
-            Station #
+          <b><u>Station #</u></b>
         </div>
         <div class="col-xs-4">
-            Name
+          <b><u>Name</u></b>
         </div>
         <div class="col-xs-1">
-            Bikes
+          <b><u>Bikes</u></b>
         </div>
         <div class="col-xs-1">
-            Spaces
+          <b><u>Spaces</u></b>
         </div>
         <div class="col-xs-1">
-            Updated
+          <b><u>Updated</u></b>
         </div>
         <!--
         <div class="col-xs-2">

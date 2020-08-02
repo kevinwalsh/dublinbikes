@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { DBikesModel } from './dbikes.model';
+import { DBikesModel, CityEnum } from './dbikes.model';
 import { AppSettingsService } from '../../helpers/app-settings/app-settings.service';
 
 @Injectable()
@@ -36,17 +36,20 @@ export class DBikesService {
         return authHeader;      // HttpHeaders immutable; must explicitly create with desired headers instead of adding later
     }
 
-    SearchAll(): Observable<DBikesModel[]> {
-        return this.http.get<DBikesModel[]>(this.baseurl + '/GetAllStations', { headers: this.CreateAuthHeader()});
+    SearchAll(city: string, sortby: string, reverseOrder: boolean): Observable<DBikesModel[]> {
+      let fullurl = this.baseurl + '/GetAllStations';
+      if (city) { fullurl += '/'+ city; }
+      if (sortby) { fullurl += '?sortby=' + sortby + '&reverseOrder=' + reverseOrder;}
+      return this.http.get<DBikesModel[]>(fullurl, { headers: this.CreateAuthHeader() });
     }
 
-    SearchSingle(stationNum: number): Observable<DBikesModel[]> {
-        return this.http.get<DBikesModel[]>(this.baseurl + '/GetStation/' + stationNum, { headers: this.CreateAuthHeader() });
+    SearchSingle(stationNum: number, city: string): Observable<DBikesModel[]> {
+        return this.http.get<DBikesModel[]>(this.baseurl + '/GetStation/'+ city + '/' + stationNum, { headers: this.CreateAuthHeader() });
     }
 
-    SearchNearby(stationNum: number): Observable<DBikesModel[]> {
+    SearchNearby(stationNum: number, city: string): Observable<DBikesModel[]> {
         return this.http.get<DBikesModel[]>(
-            this.baseurl + '/GetStationsWithinMetres/' + stationNum + '/500'    //metres
+            this.baseurl + '/GetStationsWithinMetres/' + city + '/' + stationNum + '/500'    //metres
             , { headers: this.CreateAuthHeader() }
         );
     }
