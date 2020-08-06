@@ -1,6 +1,5 @@
-﻿using System;
+﻿using DBikesXamarin.Models;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace DBikesXamarin
 {
@@ -9,7 +8,8 @@ namespace DBikesXamarin
         public App()
         {
             InitializeComponent();
-
+            bool isProduction = false;
+            DBikesSettings.SetAppSettings(isProduction);
             MainPage = new MainPage();
         }
 

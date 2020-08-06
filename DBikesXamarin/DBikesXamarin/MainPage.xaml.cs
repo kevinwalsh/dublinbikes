@@ -1,6 +1,5 @@
 ﻿using DBikesXamarin.Helpers;
 using DBikesXamarin.Helpers.Notifications;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;

@@ -1,25 +1,43 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using DBikesXamarin.Models;
 
 namespace DBikesXamarin
 {
     static class HttpClientHelper
     {
+        // Bypass SSL Certs for HTTPS with no cert
+                //  https://stackoverflow.com/questions/28629989/ignore-ssl-certificate-errors-in-xamarin-forms-pcl,        Andre's answer
+        private static HttpClient GenerateHttpClient(bool bypassCertificate)
+        {
+            HttpClient client;
+            if (bypassCertificate == true)
+            {
+                 client = new HttpClient(
+                    new HttpClientHandler()
+                    {   ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+                        {   
+                            return true;        //bypass failed SSL Cert authentication (Security risk, DO NOT do in production, or with sensitive data!)
+                        },
+                    }, false        // disposeHandler
+                );
+            }
+            else { client = new HttpClient(); }
+            return client;
+        }
 
         public async static Task<string> HttpGetRequest(string url)
         {
-            HttpClient client = new HttpClient();
-            client.Timeout=TimeSpan.FromSeconds(15);     // Max wait time
+            HttpClient client = GenerateHttpClient(true);                   //  enable/disable SSL certificate bypass.          *** N.B. SECURITY RISK! ***
+            client.Timeout=TimeSpan.FromSeconds(15);
 
             HttpResponseMessage response;
             string myjson = "";
             try {
                 var req = new HttpRequestMessage();
                 req.RequestUri = new Uri(url);
-                // req.Headers.Add("Host", "localhost:51754");
-                req.Headers.Add("Host", "dublinbikesapi.azurewebsites.net");            // omit http & www for web addresses!
-
+                req.Headers.Add("Host", DBikesSettings.host);
                 req.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", GenerateSimpleToken());
                 response = await client.SendAsync(req);
 

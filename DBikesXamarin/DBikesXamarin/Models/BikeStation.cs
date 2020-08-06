@@ -17,11 +17,11 @@ namespace DBikesXamarin
     {
 
 
-        [JsonProperty(PropertyName = "number")]
+        [JsonProperty(PropertyName = "stationNumber")]
         public int stationNumber { get; set; }
-        [JsonProperty("contract_name")]
+        [JsonProperty("contractName")]
         public string contractName { get; set; }
-        [JsonProperty("name")]
+        [JsonProperty("stationName")]
         public string stationName { get; set; }
         /*[JsonProperty("position/lat")]         // problems auto accessing child elements; created Position class
         string positionLat;
@@ -31,19 +31,19 @@ namespace DBikesXamarin
         [JsonProperty("position")]
         public Position position;
 
-        [JsonProperty("available_bikes")]
+        [JsonProperty("bikes")]
         public int available { get; set; }
-        [JsonProperty("available_bike_stands")]
+        [JsonProperty("freeStands")]
         public int free { get; set; }
-        [JsonProperty("bike_stands")]
+        [JsonProperty("total")]
         public int total { get; set; }
         [JsonProperty("status")]
         public string status { get; set; }
-        [JsonProperty("banking")]
+        [JsonProperty("isBanking")]
         public bool isBanking { get; set; }
-        [JsonProperty("bonus")]
+        [JsonProperty("isBonus")]
         public bool isBonus { get; set; }
-        [JsonProperty("last_update")]
+        [JsonProperty("updatedAt")]
         //  [JsonConverter(typeof(JsonDateConverter))]
         //  [JsonConverter(typeof(JsonDateConverter2))]         //problems autoconverting unix millisec to datetime
         //public DateTime updatedAt { get; set; }
