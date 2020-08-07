@@ -1,5 +1,6 @@
 ﻿using DBikesXamarin.Helpers;
 using DBikesXamarin.Helpers.Notifications;
+using DBikesXamarin.Models;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -17,11 +18,11 @@ namespace DBikesXamarin
         List<BikeStation> stations;
         Timer mytimer;
         int timerLoopsCount;
-        int repeatIntervalMilliseconds = 15000;
 
         public MainPage()
         {
             InitializeComponent();
+            Application.Current.Resources.Add("lowBikeThreshold", DBikesSettings.lowBikeThreshold);
             GetAllStations();
             CreateTimer();
         }
@@ -100,7 +101,7 @@ namespace DBikesXamarin
          void CreateTimer()
         {
             mytimer = new Timer();
-            mytimer.Interval = repeatIntervalMilliseconds;
+            mytimer.Interval = DBikesSettings.defaultHTTPPollTime * 1000;
             mytimer.AutoReset = true;
             mytimer.Elapsed += OnTimedEvent;
         }
@@ -125,11 +126,11 @@ namespace DBikesXamarin
         
             Device.BeginInvokeOnMainThread(() => {
                 timerLoopsCount++;
-                if (timerLoopsCount * repeatIntervalMilliseconds >= 60000*30)
+                if (timerLoopsCount * DBikesSettings.defaultHTTPPollTime >= DBikesSettings.disablePollingAfter)
                 {
                     SetSelectedStation(null);
                     MakeNotification(null, true);
-                    MakeDialogPopup("Timer autorefresh disabled after 30 minutes; Please re-set if still needed");
+                    MakeDialogPopup("Timer autorefresh disabled after "+ DBikesSettings.disablePollingAfter + " seconds; Please re-set if still needed");
                     mytimer.Stop();
 
                 }
@@ -154,7 +155,7 @@ namespace DBikesXamarin
             if (bs == null)
             {
                 title = "Station Watcher expired";
-                msg = "Timeout after 30 minutes";
+                msg = "Disabled after " + DBikesSettings.disablePollingAfter + " seconds";
             }
             else
             {

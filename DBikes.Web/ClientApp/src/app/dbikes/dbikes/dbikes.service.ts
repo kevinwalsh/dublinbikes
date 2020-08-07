@@ -8,17 +8,19 @@ import { AppSettingsService } from '../../helpers/app-settings/app-settings.serv
 @Injectable()
 export class DBikesService {
     baseurl;
+    authTokenKey;
     
     constructor(private http: HttpClient,
       private readonly appSettingsService: AppSettingsService
     ) {
       this.appSettingsService.$appSettingsObs.toPromise().then(x => {
         this.baseurl = x.apiUrl + '/api/DublinBikes';
+        this.authTokenKey = x.AuthTokenKey;
       });
     }
 
     private GenerateAuthToken(): string {
-        let key = "dublinbikestoken"; 
+        let key = this.authTokenKey;
 //        let d = new Date().toISOString().substring(0, 10);      // yyyy-MM-dd
         let d = Math.floor(new Date().getTime() /Math.pow(10,6));      //round unix time to approx 15mins
         let chararray = key + d;

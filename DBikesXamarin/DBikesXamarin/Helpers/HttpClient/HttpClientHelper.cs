@@ -30,7 +30,7 @@ namespace DBikesXamarin
         public async static Task<string> HttpGetRequest(string url)
         {
             HttpClient client = GenerateHttpClient(true);                   //  enable/disable SSL certificate bypass.          *** N.B. SECURITY RISK! ***
-            client.Timeout=TimeSpan.FromSeconds(15);
+            client.Timeout=TimeSpan.FromSeconds(DBikesSettings.defaultHTTPTimeout);
 
             HttpResponseMessage response;
             string myjson = "";
@@ -74,7 +74,7 @@ namespace DBikesXamarin
 
         public static string GenerateSimpleToken()
         {
-            var key = "dublinbikestoken";
+            var key = DBikesSettings.AuthTokenKey;
             Int32 hash = 0;
             // var chararray = (key + DateTime.Today.ToString("yyyy-MM-dd")).ToCharArray();         //daily
             var chararray = (key + ((DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) /1000000));        // round to 15mins

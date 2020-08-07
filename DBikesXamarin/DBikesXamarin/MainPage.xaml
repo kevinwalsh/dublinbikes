@@ -49,18 +49,11 @@
                             <Label Text="{Binding stationName}" WidthRequest="180" FontSize="Medium"  HorizontalOptions="FillAndExpand"/>
                             <Label Text="{Binding available}" WidthRequest="30" FontSize="Medium" >
                                 <Label.Triggers>
-                        <!--    Condition LessThan/ etc will require a ValueConverter in code. Done below.
-                                    Simple approach done here, as is sufficient for now  -->
-                                    <DataTrigger Binding="{Binding available}" Value="3" TargetType="Label">
-                                        <Setter Property="TextColor" Value="Red"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding available}" Value="2" TargetType="Label">
-                                        <Setter Property="TextColor" Value="Red"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding available}" Value="1" TargetType="Label">
-                                        <Setter Property="TextColor" Value="Red"/>
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding available}" Value="0" TargetType="Label">
+                                    <DataTrigger Binding="{Binding available,
+                                        Converter={StaticResource IsLessThanConverter},
+                                        ConverterParameter= {StaticResource lowBikeThreshold}}"
+                                                 TargetType="Label"
+                                                 Value="true">
                                         <Setter Property="TextColor" Value="Red"/>
                                     </DataTrigger>
                                 </Label.Triggers>
@@ -69,11 +62,9 @@
                             <Label Text="/"/>
                             <Label Text="{Binding free}" WidthRequest="30" FontSize="Medium" >
                                 <Label.Triggers>
-                                    <!--    Condition LessThan/ etc : Alt dataConverter approach was manageable afterall.
-                                        Needed to create IsLessThanConverter, and add xmlns:converters  reference up top here-->
-                                    <DataTrigger Binding="{Binding Path=free,
+                                    <DataTrigger Binding="{Binding free,
                                         Converter={StaticResource IsLessThanConverter},
-                                        ConverterParameter=3}"
+                                        ConverterParameter= {StaticResource lowBikeThreshold}}"
                                                  TargetType="Label"
                                                  Value="true">
                                         <Setter Property="TextColor" Value="Red"/>

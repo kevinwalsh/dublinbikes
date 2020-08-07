@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DBikes.CoreApi.SettingsOptions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Primitives;
 using System;
 
@@ -10,7 +12,8 @@ namespace DBikes.Api.Filters
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var c = GenerateAuthenticationToken();
+            var w = context.HttpContext.RequestServices.GetService<MySettingsOptions>().AuthTokenKey;
+            var c = GenerateAuthenticationToken(w);
             StringValues bearerAuth;
             context.HttpContext.Request.Headers.TryGetValue("Authorization", out bearerAuth);
 
@@ -41,9 +44,8 @@ namespace DBikes.Api.Filters
                   Neither key nor target API data is sensitive, but this obfustication will at least require 
                   extra effort from intruders to gain prolonged access. API will be protected from web scrapers.
           */
-        public string GenerateAuthenticationToken()
+        public string GenerateAuthenticationToken(string key)
         {
-            var key = "dublinbikestoken";
             //var chararray = (key + DateTime.Today.ToString("yyyy-MM-dd")).ToCharArray();  //stringify todays date
             var chararray = (key + ((DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()) / 1000000));        // round to 15mins
             Int32 hash3 = 0;        // client javascript uses int32 default; overflows common; must use same here
