@@ -18,6 +18,7 @@ namespace DBikesXamarin
         List<BikeStation> stations;
         Timer mytimer;
         int timerLoopsCount;
+        SortByEnum sortParameter = SortByEnum.Station;
 
         public MainPage()
         {
@@ -39,6 +40,7 @@ namespace DBikesXamarin
             spinner.IsVisible = true;
             stations = await DBikesHttpHelper.GetAllStations();
             spinner.IsVisible = false;
+            SortStations();
             DisplayStations(stations);
         }
 
@@ -47,6 +49,7 @@ namespace DBikesXamarin
             spinner.IsVisible = true;
             stations = await DBikesHttpHelper.GetNearbyStations(stationId);
             spinner.IsVisible = false;
+            SortStations();
             DisplayStations(stations);
         }
 
@@ -55,6 +58,7 @@ namespace DBikesXamarin
             spinner.IsVisible = true;
             stations = await DBikesHttpHelper.GetStation(stationId);
             spinner.IsVisible = false;
+            SortStations();
             DisplayStations(stations);
             if(selectedStation != null & stations != null)
             {
@@ -85,6 +89,31 @@ namespace DBikesXamarin
             }
             MakeNotification(stn,isPriority);
 
+        }
+
+        public void SortStations()
+        {
+            switch (sortParameter)
+            {
+                case SortByEnum.Alphabetical:
+                    stations = stations.OrderBy(x => x.stationName).ToList();
+                    break;
+                case SortByEnum.Station:
+                    stations = stations.OrderBy(x => x.stationNumber).ToList();
+                    break;
+                case SortByEnum.BikesFree:
+                    stations = stations.OrderBy(x => x.available).ToList();
+                    break;
+                case SortByEnum.SlotsFree:
+                    stations = stations.OrderBy(x => x.free).ToList();
+                    break;
+                case SortByEnum.LastUpdated:
+                    stations = stations.OrderBy(x => x.contractName).ToList();
+                    break;
+                case SortByEnum.Location:
+                    stations = stations.OrderBy(x => x.position.lat).ThenBy(x => x.position.lng).ToList();
+                    break;
+            }
         }
 
         public async void DisplayStations(List<BikeStation> stations)
@@ -212,8 +241,35 @@ namespace DBikesXamarin
             StopTimer();
 
         }
+
+        async void SortBy_Popup_Clicked(object sender, System.EventArgs e)
+        {
+            var sorts = System.Enum.GetNames(typeof(SortByEnum));
+            var action = await DisplayActionSheet("SORT BY: ", "cancel", null, sorts.ToArray());
+            if(action != "cancel")
+            {
+                sortParameter = (SortByEnum) System.Enum.Parse(typeof(SortByEnum), action);
+                if (stations != null)
+                {
+                    SortStations();
+                    DisplayStations(stations);
+                }
+            }
+        }
+
+        private void OpenSettings_Clicked(object sender, System.EventArgs e)
+        {
+            // change city, etc
+        }
         #endregion
 
+        #region enum
+
+        public enum SortByEnum
+        {
+            Station, Alphabetical,BikesFree,SlotsFree,LastUpdated,Location
+        }
+        #endregion
 
     }
 

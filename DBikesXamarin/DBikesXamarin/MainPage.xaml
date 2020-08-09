@@ -16,15 +16,36 @@
     <StackLayout>
         <!--    BUTTONS     -->
         <StackLayout Orientation="Horizontal">
-            <Button Text="Search All" Clicked="SearchAllButton_Clicked" WidthRequest="80" BackgroundColor="DeepSkyBlue" Margin="10"/>
-            <Image x:Name="spinner" Source="Assets/loading.gif" IsAnimationPlaying="True" IsVisible="true" WidthRequest="30"></Image>
-            <StackLayout >
+            <!-- CONTEXT MENU (extra buttons, needs longpress)-->
+            <ListView x:Name ="contextmenu" BackgroundColor="LightGray" Margin="10" SelectionMode="None"
+                 WidthRequest="80" HorizontalOptions="Fill" VerticalOptions="Center" HeightRequest="45">
+                <ListView.ItemTemplate><DataTemplate><ViewCell>
+                            <ViewCell.ContextActions>
+                                <MenuItem  Text="Sort By" Clicked="SortBy_Popup_Clicked" />
+                                <MenuItem  Text="Clear watcher" Clicked="ClearWatcher_Clicked" />
+                                <MenuItem  Text="Settings" Clicked="OpenSettings_Clicked" />
+                            </ViewCell.ContextActions>
+                            <Label Text="Menu" FontSize="Large" HorizontalOptions="Center"></Label>
+                        </ViewCell></DataTemplate></ListView.ItemTemplate>
+                <ListView.ItemsSource>
+                    <x:String>
+                        _  <!-- workaround: need dummy item here in order to display "menu" label as per above -->
+                    </x:String>
+                </ListView.ItemsSource>
+            </ListView>
+            <!-- WATCHING STATION -->
+            <StackLayout HorizontalOptions="FillAndExpand">
                 <Label Text="Watching Station:"/>
                 <Label x:Name="selectedStation" Text="{Binding stationName}"/>
             </StackLayout>
-            <Button Text="Clear Watcher" Clicked="ClearWatcher_Clicked" WidthRequest="100" Margin="10"
-                    BackgroundColor="LightGray" HorizontalOptions="EndAndExpand"/>
-</StackLayout>
+            <!-- LOADING SPINNER -->
+            <Image x:Name="spinner" Source="Assets/loading.gif" IsAnimationPlaying="True" IsVisible="true"
+                   WidthRequest="30" HorizontalOptions="Fill"></Image>
+            <!-- SEARCH ALL -->
+            <Button Text="Search All" Clicked="SearchAllButton_Clicked" BackgroundColor="DeepSkyBlue"
+                     WidthRequest="80" HorizontalOptions="Fill" Margin="10"/>
+        </StackLayout>
+        
         <!--    "COLUMN HEADERS"    -->
         <StackLayout Orientation="Horizontal" BackgroundColor="LightGray">
             <Label Text="   ID" WidthRequest="50" FontSize="Medium"/>

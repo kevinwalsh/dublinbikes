@@ -38,7 +38,7 @@ namespace DBikesXamarin.Models
                 DBikesSettings.host = "localhost:44303";
                 DBikesSettings.AuthTokenKey = "dublinbikestoken";
                 DBikesSettings.defaultCity = "dublin";
-                DBikesSettings.defaultSearchRadius = 1000;
+                DBikesSettings.defaultSearchRadius = 500;
                 DBikesSettings.defaultHTTPPollTime = 30;
                 DBikesSettings.disablePollingAfter = 900;
                 DBikesSettings.defaultHTTPTimeout = 15;
