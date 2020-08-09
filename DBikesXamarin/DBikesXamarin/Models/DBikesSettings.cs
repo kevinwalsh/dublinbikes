@@ -22,7 +22,7 @@ namespace DBikesXamarin.Models
             if (IsProduction)
             {
                 //  TODO fix production API to accept CORS from home IP
-                DBikesSettings.apiUrl = "https://dublinbikesapi.azurewebsites.net";
+                DBikesSettings.apiUrl = "https://dublinbikesapi.azurewebsites.net/api/DublinBikes";
                 DBikesSettings.host = "dublinbikesapi.azurewebsites.net";
                 DBikesSettings.AuthTokenKey = "dublinbikestoken";
                 DBikesSettings.defaultCity = "dublin";
