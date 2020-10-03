@@ -19,7 +19,7 @@
   <ItemGroup>
     <Compile Remove="Controllers\HomeController.cs" />
     <Compile Remove="Controllers\MyController.cs" />
-    <Compile Remove="Filters\SimpleAuthenticationAttribute.cs" />
+    <Compile Remove="Helpers\LogicApp\LogicAppHelper.cs" />
     <Compile Remove="Models\IdentityModels.cs" />
   </ItemGroup>
 
@@ -29,7 +29,6 @@
 
   <ItemGroup>
     <Folder Include="AppSettingsOptions\" />
-    <Folder Include="Filters\" />
   </ItemGroup>
 
   <ItemGroup>

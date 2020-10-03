@@ -15,7 +15,7 @@ export class DBikesService {
     ) {
       this.appSettingsService.$appSettingsObs.toPromise().then(x => {
         this.baseurl = x.apiUrl + '/api/DublinBikes';
-        this.authTokenKey = x.AuthTokenKey;
+        this.authTokenKey = x.authTokenKey;
       });
     }
 
